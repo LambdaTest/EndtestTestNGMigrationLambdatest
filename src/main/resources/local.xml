@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite thread-count="1" verbose="1" name="Lambdatest Suite"
+	annotations="JDK" parallel="tests">
+
+	<test name="Test1">
+		<parameter name="browser" value="Chrome" />
+		<parameter name="version" value="85.0" />
+		<parameter name="platform" value="win10" />
+		<classes>
+			<class name="TestngFramwork.LocalTest" />
+			
+		</classes>
+	</test>
+
+</suite>

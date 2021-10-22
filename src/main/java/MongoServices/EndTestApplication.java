@@ -1,6 +1,5 @@
-package com.pack;
+package MongoServices;
 
-import com.pack.configs.InterceptorConfig;
 import com.pack.configs.MongoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
