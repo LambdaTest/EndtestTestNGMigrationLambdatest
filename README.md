@@ -1,2 +1,1 @@
-# endtestTestNGMigrationLambdatest
-migrate EndTest json test to testng.
+# End Test fetch API
