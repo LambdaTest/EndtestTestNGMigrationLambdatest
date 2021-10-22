@@ -26,3 +26,6 @@ hs_err_pid*
 target/
 .idea
 target
+**/.idea
+**/.DS_Store
+.DS_Store
