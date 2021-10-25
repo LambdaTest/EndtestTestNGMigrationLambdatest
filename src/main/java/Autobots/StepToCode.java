@@ -12,11 +12,9 @@ public class StepToCode {
   public void addCodeFromStep(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     switch (testCaseStepsDTO.getType()) {
     case "GetLink":
-      System.out.println("@@@@");
       getLinkT(fileName, testCaseStepsDTO);
       break;
     case "Click":
-      System.out.println("!!!!");
       clickT(fileName, testCaseStepsDTO);
       break;
     default:
