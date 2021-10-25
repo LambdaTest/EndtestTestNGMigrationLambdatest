@@ -67,9 +67,14 @@ public class EndTestService implements EndTestServiceImpl {
 
   @Override
   public SuiteIdProjectIdForTestIdDTO getSuiteIdProjectIdForTestIdDTO(String testId) {
+    TransformingDtoToDao transformingDtoToDao = new TransformingDtoToDao();
     Query query = new Query();
-
-    return null;
+    query.addCriteria(Criteria.where("tests._id").is(testId));
+    EndTestProjectSuiteLinkingDAO endTestProjectSuiteLinkingDAO =
+          mongoTemplate.findOne(query,EndTestProjectSuiteLinkingDAO.class);
+    return transformingDtoToDao.getSuiteIdProjectId(endTestProjectSuiteLinkingDAO, testId);
   }
+
+
 
 }

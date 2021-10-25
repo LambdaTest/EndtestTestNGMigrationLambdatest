@@ -1,6 +1,7 @@
 package MongoServices.transformer;
 
 import MongoServices.DTO.request.EndTestProjectSuiteLinkingDTO;
+import MongoServices.DTO.response.SuiteIdProjectIdForTestIdDTO;
 import MongoServices.mongo.entity.EndTestProjectSuiteLinkingDAO;
 
 public class TransformingDtoToDao {
@@ -11,5 +12,14 @@ public class TransformingDtoToDao {
     endTestProjectSuiteLinkingDTO.setSuiteId(endTestProjectSuiteLinkingDAO.getSuiteId());
     endTestProjectSuiteLinkingDTO.setTests(endTestProjectSuiteLinkingDAO.getTests());
     return endTestProjectSuiteLinkingDTO;
+  }
+
+  public SuiteIdProjectIdForTestIdDTO getSuiteIdProjectId(EndTestProjectSuiteLinkingDAO
+          endTestProjectSuiteLinkingDAO, String testId){
+    SuiteIdProjectIdForTestIdDTO suiteIdProjectIdForTestIdDTO = new SuiteIdProjectIdForTestIdDTO();
+    suiteIdProjectIdForTestIdDTO.setProjectId(endTestProjectSuiteLinkingDAO.getProjectId());
+    suiteIdProjectIdForTestIdDTO.setSuiteId(endTestProjectSuiteLinkingDAO.getSuiteId());
+    suiteIdProjectIdForTestIdDTO.setTestId(testId);
+    return suiteIdProjectIdForTestIdDTO;
   }
 }
