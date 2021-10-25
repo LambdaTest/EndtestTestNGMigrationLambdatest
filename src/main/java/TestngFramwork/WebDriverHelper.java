@@ -1,7 +1,5 @@
 package TestngFramwork;
 
-
-
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
 import org.apache.logging.log4j.LogManager;
@@ -21,14 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
-  protected Actions actions;
 
   public WebDriverHelper() {
     super();
-    driver = EnvSetup.driver.get();
-    if (driver != null) {
-      actions = new Actions(driver);
-    }
   }
 
   public WebDriverHelper(RemoteWebDriver testDriver) {
@@ -81,6 +74,10 @@ public class WebDriverHelper extends Base {
       ele = driver.findElementByCssSelector(locatorValue);
     } else if (using.contentEquals(TAG_NAME)) {
       ele = driver.findElementByTagName(locatorValue);
+    } else if (using.contentEquals(LINK)) {
+      ele = driver.findElementByLinkText(locatorValue);
+    } else if (using.contentEquals(PARTIAL_LINK)) {
+      ele = driver.findElementByPartialLinkText(locatorValue);
     }
     ltLogger.info("element '{}' found", ele);
     return ele;
