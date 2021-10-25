@@ -42,16 +42,5 @@ public class StepToCode {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
-
-    /*try {
-      FileWriter myWriter = new FileWriter("logs/" + fileName);
-      myWriter.write(codeLine);
-      myWriter.close();
-      System.out.println("Successfully wrote to the file.");
-    } catch (IOException e) {
-      System.out.println("An error occurred.");
-      e.printStackTrace();
-    }*/
-
   }
 }
