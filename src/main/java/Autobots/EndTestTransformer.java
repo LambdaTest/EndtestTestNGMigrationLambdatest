@@ -6,7 +6,9 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.testng.annotations.Test;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,7 @@ public class EndTestTransformer {
   }
 
   public void writeInJavaFile(TestCaseStepsDTO testCaseStepsDTO){
-     File f = new File(testCaseStepsDTO.getName().replace(" ",""));
-  }
 
+  }
 
 }

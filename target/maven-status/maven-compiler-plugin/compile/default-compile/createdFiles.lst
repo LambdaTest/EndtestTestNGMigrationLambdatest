@@ -17,6 +17,7 @@ MongoServices/mongo/entity/EndTestProjectSuiteLinkingDAO.class
 MongoServices/service/EndTestService.class
 MongoServices/controller/EndTestAPIs.class
 MongoServices/DTO/response/ErrorDto.class
+MongoServices/DTO/response/SuiteIdProjectIdForTestIdDTO.class
 TestngFramwork/Base.class
 Autobots/EndTestTransformer.class
 Autobots/EndTestTransformer$2.class
@@ -29,5 +30,6 @@ TestngFramwork/ApiHelper.class
 TestngFramwork/WebDriverHelper$3.class
 TestngFramwork/WebDriverHelper$1.class
 MongoServices/mongo/EndTestDocumentImpl.class
+Autobots/StepToCode.class
 TestngFramwork/SingleTest.class
 TestngFramwork/EnvSetup.class

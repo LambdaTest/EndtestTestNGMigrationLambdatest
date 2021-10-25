@@ -2,6 +2,7 @@ package TestngFramwork;
 
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -19,6 +20,7 @@ public class Base extends Constant {
   String accessKey = System.getenv("LT_ACCESS_KEY") == null ? "YOUR LT_ACCESS_KEY" : System.getenv("LT_ACCESS_KEY");
   RemoteWebDriver driver;
   String status = "failed";
+  protected Actions actions;
 
   @BeforeTest(alwaysRun = true)
   @Parameters(value = { "browser", "version", "platform" })
@@ -39,6 +41,7 @@ public class Base extends Constant {
     try {
       driver = new RemoteWebDriver(new URL(gridURL), capability);
       driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+      actions = new Actions(driver);
       EnvSetup.driver.set(driver);
     } catch (Exception e) {
       ltLogger.error("driver creation fail");
