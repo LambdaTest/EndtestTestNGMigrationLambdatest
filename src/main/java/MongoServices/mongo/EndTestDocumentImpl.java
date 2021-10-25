@@ -1,9 +1,9 @@
-package com.pack.repository.mongo;
+package MongoServices.mongo;
 
-import com.pack.repository.mongo.entity.EndTestDocument;
+import MongoServices.mongo.entity.EndTestDocumentDAO;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface EndTestDocumentImpl extends MongoRepository<EndTestDocument,String> {
+public interface EndTestDocumentImpl extends MongoRepository<EndTestDocumentDAO,String> {
 }

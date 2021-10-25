@@ -1,6 +1,8 @@
-package com.pack.service.impl;
+package MongoServices.service.impl;
 
-import com.pack.repository.mongo.entity.EndTestDocument;
+import MongoServices.DTO.request.EndTestProjectSuiteLinkingDTO;
+import MongoServices.DTO.response.ResponseDto;
+import MongoServices.mongo.entity.EndTestDocumentDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,5 +10,9 @@ import java.util.List;
 public interface EndTestServiceImpl {
         List<String> getDistinctValuesBasedOnField(String field);
 
-        List<EndTestDocument> getResultBasedOnFieldValue(String field, String value);
+        List<EndTestDocumentDAO> getResultBasedOnFieldValue(String field, String value);
+
+        ResponseDto saveTheLinkingData(EndTestProjectSuiteLinkingDTO endTestProjectSuiteLinkingDTO);
+
+        EndTestProjectSuiteLinkingDTO getDataFromLinkingDB(String suiteId);
 }
