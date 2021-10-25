@@ -3,12 +3,7 @@ package Autobots;
 import MongoServices.DTO.response.TestCaseStepsDTO;
 import TestngFramwork.ApiHelper;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import org.testng.annotations.Test;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +18,8 @@ public class EndTestTransformer {
 
   // Another api to get projectId and suiteId from provided testId
 
+  StepToCode stepToCode = new StepToCode();
+
   @Test
   public void testWriter() {
     ApiHelper apiHelper = new ApiHelper();
@@ -35,18 +32,14 @@ public class EndTestTransformer {
         apiHelper.getReqAsString("http://localhost:9990/endTest/getResultBasedOnFieldValue/test_case_id?value=" + s),
         new TypeToken<List<TestCaseStepsDTO>>() {
         }.getType());
-      createJsonStepToSeleniumStep(listOfTestCaseSteps);
+      createSeleniumStepFromJsonStep(listOfTestCaseSteps);
     }
   }
 
-  public void createJsonStepToSeleniumStep(List<TestCaseStepsDTO> listOfTestCaseSteps) {
+  public void createSeleniumStepFromJsonStep(List<TestCaseStepsDTO> listOfTestCaseSteps) {
     for (TestCaseStepsDTO t : listOfTestCaseSteps){
-      writeInJavaFile(t);
+      stepToCode.addCodeFromStep(t.getName().replace(" ","_")+".txt",t);
     }
-  }
-
-  public void writeInJavaFile(TestCaseStepsDTO testCaseStepsDTO){
-
   }
 
 }

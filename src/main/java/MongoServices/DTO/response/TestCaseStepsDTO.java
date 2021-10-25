@@ -12,7 +12,6 @@ import java.util.Comparator;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestCaseStepsDTO implements Comparator<TestCaseStepsDTO> {
 
   private String name;

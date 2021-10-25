@@ -5,6 +5,7 @@ import TestngFramwork.Constant;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 
 public class StepToCode {
 
@@ -35,7 +36,7 @@ public class StepToCode {
   }
 
   public void writeInFile(String fileName, String codeLine) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("logs/" + fileName, true))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("logs/" + fileName,true))) {
       writer.append(codeLine);
       writer.append("\n");
     } catch (Exception e) {

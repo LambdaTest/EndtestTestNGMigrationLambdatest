@@ -16,15 +16,15 @@ public class Constant {
   public static Map<String, String> locatorUsing = getLocatorUsing();
 
   public static Map<String, String> getLocatorUsing() {
-    Map<String, String> using = new HashMap<>();
-    using.put(ID, "ID");
-    using.put("css_selector", "CSS");
-    using.put(XPATH, "XPATH");
-    using.put("class_name", "CLASS");
-    using.put(NAME, "NAME");
-    using.put("tag_name", "TAG_NAME");
-    using.put(LINK, "LINK");
-    using.put(PARTIAL_LINK, "PARTIAL_LINK");
+    Map<String, String> locatorUsing = new HashMap<>();
+    locatorUsing.put(ID, "ID");
+    locatorUsing.put("css_selector", "CSS");
+    locatorUsing.put(XPATH, "XPATH");
+    locatorUsing.put("class_name", "CLASS");
+    locatorUsing.put(NAME, "NAME");
+    locatorUsing.put("tag_name", "TAG_NAME");
+    locatorUsing.put(LINK, "LINK");
+    locatorUsing.put(PARTIAL_LINK, "PARTIAL_LINK");
     return locatorUsing;
   }
 }
