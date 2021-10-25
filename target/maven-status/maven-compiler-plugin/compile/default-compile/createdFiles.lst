@@ -10,6 +10,7 @@ TestngFramwork/WebDriverHelper$2.class
 MongoServices/DTO/request/EndTestProjectSuiteLinkingDTO.class
 MongoServices/configs/MongoConfig.class
 MongoServices/mongo/entity/SuiteIDNameList.class
+Autobots/EndTestTransformer$1.class
 TestngFramwork/WebDriverHelper.class
 MongoServices/configs/InterceptorConfig.class
 MongoServices/mongo/entity/EndTestProjectSuiteLinkingDAO.class
@@ -17,10 +18,14 @@ MongoServices/service/EndTestService.class
 MongoServices/controller/EndTestAPIs.class
 MongoServices/DTO/response/ErrorDto.class
 TestngFramwork/Base.class
+Autobots/EndTestTransformer.class
+Autobots/EndTestTransformer$2.class
 MongoServices/EndTestApplication.class
 MongoServices/DTO/response/ResponseDto.class
+MongoServices/DTO/response/TestCaseStepsDTO.class
 MongoServices/transformer/TransformingDtoToDao.class
 MongoServices/service/impl/EndTestServiceImpl.class
+TestngFramwork/ApiHelper.class
 TestngFramwork/WebDriverHelper$3.class
 TestngFramwork/WebDriverHelper$1.class
 MongoServices/mongo/EndTestDocumentImpl.class
