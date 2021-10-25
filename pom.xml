@@ -17,7 +17,6 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <groovy.version>3.0.7</groovy.version>
     </properties>
 
     <dependencies>
@@ -90,17 +89,6 @@
             <artifactId>xml-path</artifactId>
             <version>4.4.0</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>io.rest-assured</groupId>-->
-<!--            <artifactId>spring-mock-mvc</artifactId>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <artifactId>groovy</artifactId>-->
-<!--                    <groupId>org.codehaus.groovy</groupId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
