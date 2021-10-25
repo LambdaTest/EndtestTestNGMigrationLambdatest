@@ -197,7 +197,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.pack.EndTestApplication</mainClass>
+                            <mainClass>MongoServices.EndTestApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -213,7 +213,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.pack.EndTestApplication</mainClass>
+                            <mainClass>MongoServices.EndTestApplication</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -1,4 +1,4 @@
-package com.pack.repository.mongo.entity;
+package MongoServices.mongo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(value = "endTest")
-public class EndTestDocument {
+public class EndTestDocumentDAO {
 
   @Field("_id")
   private String id;
