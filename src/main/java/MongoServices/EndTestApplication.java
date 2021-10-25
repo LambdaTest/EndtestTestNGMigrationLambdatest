@@ -1,6 +1,6 @@
 package MongoServices;
 
-import com.pack.configs.MongoConfig;
+import MongoServices.configs.MongoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Import;
  **/
 
 @Import({MongoConfig.class})
-@SpringBootApplication(scanBasePackages = {"com.pack","com.pack.controller","com.pack.handler","com.pack.repository",
-                "com.pack.service"})
+@SpringBootApplication(scanBasePackages = {"MongoServices","MongoServices.controller","MongoServices.handler","MongoServices.mongo",
+                "MongoServices.service"})
 public class EndTestApplication {
 
     public static void main(String[] args){
