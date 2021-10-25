@@ -5,15 +5,18 @@ import TestngFramwork.Constant;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 
 public class StepToCode {
 
   public void addCodeFromStep(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     switch (testCaseStepsDTO.getType()) {
     case "GetLink":
+      System.out.println("@@@@");
       getLinkT(fileName, testCaseStepsDTO);
       break;
     case "Click":
+      System.out.println("!!!!");
       clickT(fileName, testCaseStepsDTO);
       break;
     default:
@@ -35,11 +38,22 @@ public class StepToCode {
   }
 
   public void writeInFile(String fileName, String codeLine) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("logs/" + fileName, true))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("logs/" + fileName,true))) {
       writer.append(codeLine);
       writer.append("\n");
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+
+    /*try {
+      FileWriter myWriter = new FileWriter("logs/" + fileName);
+      myWriter.write(codeLine);
+      myWriter.close();
+      System.out.println("Successfully wrote to the file.");
+    } catch (IOException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
+    }*/
+
   }
 }
