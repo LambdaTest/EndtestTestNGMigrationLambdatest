@@ -2,6 +2,7 @@ package MongoServices.service;
 
 import MongoServices.DTO.request.EndTestProjectSuiteLinkingDTO;
 import MongoServices.DTO.response.ResponseDto;
+import MongoServices.DTO.response.SuiteIdProjectIdForTestIdDTO;
 import MongoServices.common.Constants;
 import MongoServices.mongo.entity.EndTestDocumentDAO;
 import MongoServices.mongo.entity.EndTestProjectSuiteLinkingDAO;
@@ -62,6 +63,13 @@ public class EndTestService implements EndTestServiceImpl {
     TransformingDtoToDao transformingDtoToDao = new TransformingDtoToDao();
     Query query = new Query().addCriteria(Criteria.where("suiteId").is(suiteId));
     return transformingDtoToDao.getTransformedData(mongoTemplate.findOne(query,EndTestProjectSuiteLinkingDAO.class));
+  }
+
+  @Override
+  public SuiteIdProjectIdForTestIdDTO getSuiteIdProjectIdForTestIdDTO(String testId) {
+    Query query = new Query();
+
+    return null;
   }
 
 }

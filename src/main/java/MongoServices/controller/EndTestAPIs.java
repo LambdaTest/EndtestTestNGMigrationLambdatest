@@ -2,6 +2,7 @@ package MongoServices.controller;
 
 import MongoServices.DTO.request.EndTestProjectSuiteLinkingDTO;
 import MongoServices.DTO.response.ResponseDto;
+import MongoServices.DTO.response.SuiteIdProjectIdForTestIdDTO;
 import MongoServices.mongo.entity.EndTestDocumentDAO;
 import MongoServices.service.impl.EndTestServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,4 +36,8 @@ public class EndTestAPIs {
     return endTestServiceImpl.getDataFromLinkingDB(suiteId);
   }
 
+  @GetMapping("/getSuiteIdFromTestId")
+  public SuiteIdProjectIdForTestIdDTO getSuiteIdProjectIdForTestIdDTO(@RequestParam String testId){
+      return endTestServiceImpl.getSuiteIdProjectIdForTestIdDTO(testId);
+  }
 }
