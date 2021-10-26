@@ -1,4 +1,4 @@
-package Autobots;
+package EndTestTransformerBots;
 
 import MongoServices.DTO.response.TestCaseStepsDTO;
 import TestngFramwork.Constant;
@@ -8,13 +8,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class StepToCode {
 
   public void addCodeFromStep(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    fileName = "logs/"+fileName;
     switch (testCaseStepsDTO.getType()) {
     case "GetLink":
       getLinkT(fileName, testCaseStepsDTO);

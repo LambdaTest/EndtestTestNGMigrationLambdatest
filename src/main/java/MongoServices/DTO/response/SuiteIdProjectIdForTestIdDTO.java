@@ -15,6 +15,8 @@ public class SuiteIdProjectIdForTestIdDTO {
 
   private String projectId;
 
+  private String suiteName;
+
   private String suiteId;
 
   private String testId;
