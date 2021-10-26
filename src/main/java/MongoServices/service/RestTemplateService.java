@@ -1,10 +1,7 @@
 package MongoServices.service;
 
 import MongoServices.DTO.response.EndTestSuitesUnderProjectDto;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -56,20 +53,32 @@ public class RestTemplateService {
     return restTemplate.exchange(encodeURL, HttpMethod.GET, entity, new ParameterizedTypeReference<List<EndTestSuitesUnderProjectDto>>(){}).getBody();
   }
 
-  public List<EndTestSuitesUnderProjectDto> getTestIdListUnderSuiteId(String url, String appId, String appCode, String suiteId){
+  public List<EndTestSuitesUnderProjectDto> getTestIdListUnderSuiteId(String url, String appId, String appCode, String suiteId) {
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type","application/json");
-    headers.set("Accept","application/json");
+    headers.set("Content-Type", "application/json");
+    headers.set("Accept", "application/json");
 
     UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
-    uriComponentsBuilder.queryParam("action","getTestCases");
-    uriComponentsBuilder.queryParam("appId",appId);
-    uriComponentsBuilder.queryParam("appCode",appCode);
-    uriComponentsBuilder.queryParam("testSuite",suiteId);
+    uriComponentsBuilder.queryParam("action", "getTestCases");
+    uriComponentsBuilder.queryParam("appId", appId);
+    uriComponentsBuilder.queryParam("appCode", appCode);
+    uriComponentsBuilder.queryParam("testSuite", suiteId);
     String encodedURL = uriComponentsBuilder.encode().toUriString();
 
     HttpEntity entity = new HttpEntity(headers);
-    return restTemplate.exchange(encodedURL, HttpMethod.GET, entity, new ParameterizedTypeReference<List<EndTestSuitesUnderProjectDto>>(){}).getBody();
+    for (int i = 0; i < 5; i++) {
+      try {
+        Thread.sleep(1000);
+        Object a = restTemplate.exchange(encodedURL, HttpMethod.GET, entity,
+          new ParameterizedTypeReference<List<EndTestSuitesUnderProjectDto>>() {
+          }).getBody();
+        if (a != null) {
+          return (List<EndTestSuitesUnderProjectDto>) a;
+        }
+      } catch (Exception e) {
+        System.out.println("Exception came" + entity);
+        }
+      }
+      return null;
+    }
   }
-
-}

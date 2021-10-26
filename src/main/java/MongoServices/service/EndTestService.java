@@ -11,7 +11,10 @@ import MongoServices.mongo.entity.EndTestDocumentDAO;
 import MongoServices.mongo.entity.EndTestProjectSuiteLinkingDAO;
 import MongoServices.service.impl.EndTestServiceImpl;
 import MongoServices.transformer.TransformingDtoToDao;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.client.result.UpdateResult;
+import org.bson.BsonArray;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -87,18 +90,24 @@ import java.util.List;
     List<EndTestSuitesUnderProjectDto> endTestIdUnderTestSuite;
     EndTestProjectSuiteLinkingDAO endTestProjectSuiteLinkingDAO;
 
+    //Getting suiteId and suiteName from below api hit on line 91 and 92.
     List<EndTestSuitesUnderProjectDto> endTestSuitesUnderProjectDto = restTemplateService
             .getSuiteIdListUsingAppCodeAndAppId(ApiURLs.getTestSuites, appId, appCode);
 
     for (EndTestSuitesUnderProjectDto e : endTestSuitesUnderProjectDto) {
+      //Getting testId and name from below api hit based on individual suiteIds. line 97-98
       endTestIdUnderTestSuite = restTemplateService.getTestIdListUnderSuiteId(ApiURLs.getTestSuites, appId, appCode,
         e.getId());
       endTestProjectSuiteLinkingDAO = transformingDtoToDao.getDaoFromDto(endTestIdUnderTestSuite);
       endTestProjectSuiteLinkingDAO.setSuiteId(e.getId());
       endTestProjectSuiteLinkingDAO.setSuiteName(e.getName());
       try {
-        System.out.println("1");
-        mongoTemplate.save(endTestProjectSuiteLinkingDAO);
+        Query query = new Query();
+        query.addCriteria(Criteria.where("suiteId").is(endTestProjectSuiteLinkingDAO.getSuiteId()));
+        Document document = new Document();
+        mongoTemplate.getConverter().write(endTestProjectSuiteLinkingDAO, document);
+        document.put("tests",endTestProjectSuiteLinkingDAO.getTests());
+        mongoTemplate.upsert(query,Update.fromDocument(document),EndTestProjectSuiteLinkingDAO.class);
       } catch (Exception exception) {
         return (ResponseDto) new ErrorDto(400,
           "Server was not able to save the appId and appCode related suite information in the database");
