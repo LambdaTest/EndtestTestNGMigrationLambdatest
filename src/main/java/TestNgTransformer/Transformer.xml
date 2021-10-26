@@ -5,7 +5,7 @@
 
     <test name="Test1">
         <classes>
-            <class name="Autobots.EndTestTransformer"/>
+            <class name="EndTestTransformerBots.EndTestTransformer"/>
         </classes>
     </test>
 

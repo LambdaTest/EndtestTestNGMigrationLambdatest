@@ -1,8 +1,10 @@
-package Autobots;
+package EndTestTransformerBots;
 
+import MongoServices.DTO.response.SuiteIdProjectIdForTestIdDTO;
 import MongoServices.DTO.response.TestCaseStepsDTO;
 import TestngFramwork.ApiHelper;
 import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +34,21 @@ public class EndTestTransformer {
         apiHelper.getReqAsString("http://localhost:9990/endTest/getResultBasedOnFieldValue/test_case_id?value=" + s),
         new TypeToken<List<TestCaseStepsDTO>>() {
         }.getType());
-      createSeleniumStepFromJsonStep(listOfTestCaseSteps);
+
+      SuiteIdProjectIdForTestIdDTO suiteIdProjectIdForTestIdDTO = apiHelper.convertJsonToObject(apiHelper
+          .getReqAsString("http://localhost:9990/endTest/getSuiteIdFromTestId?testId="+s)
+        ,SuiteIdProjectIdForTestIdDTO.class);
+
+      createSeleniumStepFromJsonStep(listOfTestCaseSteps,suiteIdProjectIdForTestIdDTO);
     }
   }
 
-  public void createSeleniumStepFromJsonStep(List<TestCaseStepsDTO> listOfTestCaseSteps) {
+  public void createSeleniumStepFromJsonStep(List<TestCaseStepsDTO> listOfTestCaseSteps, SuiteIdProjectIdForTestIdDTO suiteIdProjectIdForTestIdDTO) {
     for (TestCaseStepsDTO t : listOfTestCaseSteps){
-      stepToCode.addCodeFromStep(t.getName().replace(" ","_")+".txt",t);
+      String fileName = suiteIdProjectIdForTestIdDTO.getSuiteName().replace(" ","_")
+              +"______"+t.getName().replace(" ","_").replace("[","")
+                  .replace("]","")+".txt";
+      stepToCode.addCodeFromStep(fileName,t);
     }
   }
 
