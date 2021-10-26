@@ -26,5 +26,7 @@ public class EndTestProjectSuiteLinkingDAO {
 
      private String suiteId;
 
+     private String suiteName;
+
      private List<SuiteIDNameListDTO> tests;
 }
