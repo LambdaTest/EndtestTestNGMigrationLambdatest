@@ -1,8 +1,11 @@
 package MongoServices.service;
 
 import MongoServices.DTO.request.EndTestProjectSuiteLinkingDTO;
+import MongoServices.DTO.response.EndTestSuitesUnderProjectDto;
+import MongoServices.DTO.response.ErrorDto;
 import MongoServices.DTO.response.ResponseDto;
 import MongoServices.DTO.response.SuiteIdProjectIdForTestIdDTO;
+import MongoServices.common.ApiURLs;
 import MongoServices.common.Constants;
 import MongoServices.mongo.entity.EndTestDocumentDAO;
 import MongoServices.mongo.entity.EndTestProjectSuiteLinkingDAO;
@@ -18,24 +21,26 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Service
-public class EndTestService implements EndTestServiceImpl {
+@Service public class EndTestService implements EndTestServiceImpl {
 
-  @Qualifier("mongoDbReference")
-  @Autowired MongoTemplate mongoTemplate;
+  @Qualifier("mongoDbReference") @Autowired MongoTemplate mongoTemplate;
+
+  @Autowired RestTemplateService restTemplateService;
 
   @Override
   public List<String> getDistinctValuesBasedOnField(String field) {
-    return mongoTemplate.findDistinct(field, EndTestDocumentDAO.class,String.class);
+    return mongoTemplate.findDistinct(field, EndTestDocumentDAO.class, String.class);
   }
 
   @Override
-  public List<EndTestDocumentDAO> getResultBasedOnFieldValue(String field,String value) {
+  public List<EndTestDocumentDAO> getResultBasedOnFieldValue(String field, String value) {
     Query query = new Query();
     query.addCriteria(Criteria.where(field).is(value));
-    return mongoTemplate.find(query,EndTestDocumentDAO.class);
+    return mongoTemplate.find(query, EndTestDocumentDAO.class);
   }
 
   @Override
@@ -43,26 +48,26 @@ public class EndTestService implements EndTestServiceImpl {
     ResponseDto responseDto = new ResponseDto();
     Query query = new Query();
     query.addCriteria(Criteria.where("suiteId").is(endTestProjectSuiteLinkingDTO.getSuiteId()));
-      Document document = new Document();
-      mongoTemplate.getConverter().write(endTestProjectSuiteLinkingDTO,document);
-     UpdateResult updateResult = mongoTemplate.upsert(query, Update.fromDocument(document)
-       , EndTestProjectSuiteLinkingDAO.class, Constants.endTestSuite);
+    Document document = new Document();
+    mongoTemplate.getConverter().write(endTestProjectSuiteLinkingDTO, document);
+    UpdateResult updateResult = mongoTemplate.upsert(query, Update.fromDocument(document),
+      EndTestProjectSuiteLinkingDAO.class, Constants.endTestSuite);
 
-     if ((updateResult.getMatchedCount() == 0 && updateResult.getUpsertedId()!=null) ||
-       (updateResult.getMatchedCount() > 0 && updateResult.getUpsertedId() == null)) {
-       responseDto.setSuccessCode(Constants.statusCode);
-       responseDto.setSuccessMessage(Constants.successMessage);
-     }else {
-       responseDto.setErrorCode(Constants.errorCode);
-       responseDto.setErrorMessage(Constants.errorMessage);
-     }
+    if ((updateResult.getMatchedCount() == 0 && updateResult.getUpsertedId() != null) || (updateResult.getMatchedCount() > 0 && updateResult.getUpsertedId() == null)) {
+      responseDto.setSuccessCode(Constants.statusCode);
+      responseDto.setSuccessMessage(Constants.successMessage);
+    } else {
+      responseDto.setErrorCode(Constants.errorCode);
+      responseDto.setErrorMessage(Constants.errorMessage);
+    }
     return responseDto;
   }
 
-  public EndTestProjectSuiteLinkingDTO getDataFromLinkingDB(String suiteId){
+  @Override
+  public EndTestProjectSuiteLinkingDTO getDataFromLinkingDB(String suiteId) {
     TransformingDtoToDao transformingDtoToDao = new TransformingDtoToDao();
     Query query = new Query().addCriteria(Criteria.where("suiteId").is(suiteId));
-    return transformingDtoToDao.getTransformedData(mongoTemplate.findOne(query,EndTestProjectSuiteLinkingDAO.class));
+    return transformingDtoToDao.getTransformedData(mongoTemplate.findOne(query, EndTestProjectSuiteLinkingDAO.class));
   }
 
   @Override
@@ -70,11 +75,36 @@ public class EndTestService implements EndTestServiceImpl {
     TransformingDtoToDao transformingDtoToDao = new TransformingDtoToDao();
     Query query = new Query();
     query.addCriteria(Criteria.where("tests._id").is(testId));
-    EndTestProjectSuiteLinkingDAO endTestProjectSuiteLinkingDAO =
-          mongoTemplate.findOne(query,EndTestProjectSuiteLinkingDAO.class);
+    EndTestProjectSuiteLinkingDAO endTestProjectSuiteLinkingDAO = mongoTemplate.findOne(query,
+      EndTestProjectSuiteLinkingDAO.class);
     return transformingDtoToDao.getSuiteIdProjectId(endTestProjectSuiteLinkingDAO, testId);
   }
 
+  @Override
+  public ResponseDto getSuiteTestIdDateAndSaveInLinkingDB(String appId, String appCode) {
+    TransformingDtoToDao transformingDtoToDao = new TransformingDtoToDao();
 
+    List<EndTestSuitesUnderProjectDto> endTestIdUnderTestSuite;
+    EndTestProjectSuiteLinkingDAO endTestProjectSuiteLinkingDAO;
+
+    List<EndTestSuitesUnderProjectDto> endTestSuitesUnderProjectDto = restTemplateService
+            .getSuiteIdListUsingAppCodeAndAppId(ApiURLs.getTestSuites, appId, appCode);
+
+    for (EndTestSuitesUnderProjectDto e : endTestSuitesUnderProjectDto) {
+      endTestIdUnderTestSuite = restTemplateService.getTestIdListUnderSuiteId(ApiURLs.getTestSuites, appId, appCode,
+        e.getId());
+      endTestProjectSuiteLinkingDAO = transformingDtoToDao.getDaoFromDto(endTestIdUnderTestSuite);
+      endTestProjectSuiteLinkingDAO.setSuiteId(e.getId());
+      endTestProjectSuiteLinkingDAO.setSuiteName(e.getName());
+      try {
+        System.out.println("1");
+        mongoTemplate.save(endTestProjectSuiteLinkingDAO);
+      } catch (Exception exception) {
+        return (ResponseDto) new ErrorDto(400,
+          "Server was not able to save the appId and appCode related suite information in the database");
+      }
+    }
+    return new ResponseDto(200, "Server saved the suiteId and TestId in database based on the appId and appCode given");
+  }
 
 }

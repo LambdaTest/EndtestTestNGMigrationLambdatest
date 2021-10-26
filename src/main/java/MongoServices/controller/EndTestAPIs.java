@@ -40,4 +40,9 @@ public class EndTestAPIs {
   public SuiteIdProjectIdForTestIdDTO getSuiteIdProjectIdForTestIdDTO(@RequestParam String testId){
       return endTestServiceImpl.getSuiteIdProjectIdForTestIdDTO(testId);
   }
+
+  @GetMapping("/getSuiteTestIdDateAndSaveInLinkingDB")
+  public ResponseDto getSuiteTestIdDateAndSaveInLinkingDB(@RequestParam(name = "appId") String appId, @RequestParam(name = "appCode") String appCode){
+    return endTestServiceImpl.getSuiteTestIdDateAndSaveInLinkingDB(appId,appCode);
+  }
 }
