@@ -2,10 +2,15 @@ package Autobots;
 
 import MongoServices.DTO.response.TestCaseStepsDTO;
 import TestngFramwork.Constant;
+import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class StepToCode {
 
@@ -35,12 +40,28 @@ public class StepToCode {
     return new String[] { Constant.locatorUsing.get(using), Locator.replace("\\\\", "") };
   }
 
-  public void writeInFile(String fileName, String codeLine) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("logs/" + fileName,true))) {
+  public static void writeInFile(String fileName, String codeLine) {
+    createDirectoryAndFile(fileName);
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
       writer.append(codeLine);
       writer.append("\n");
     } catch (Exception e) {
       System.out.println(e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+  public static void createDirectoryAndFile(String filePath) {
+    int lastIndex = filePath.lastIndexOf("/");
+    String dirPath = filePath.substring(0, lastIndex);
+    boolean status = false;
+    try {
+      FileUtils.forceMkdir(new File(dirPath));
+      status = new File(filePath).createNewFile();
+      System.out.println(status);
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.out.println(status);
     }
   }
 }

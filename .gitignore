@@ -33,3 +33,4 @@ target
 .DS_Store/
 .gradle
 **endtest.iml
+logs/
