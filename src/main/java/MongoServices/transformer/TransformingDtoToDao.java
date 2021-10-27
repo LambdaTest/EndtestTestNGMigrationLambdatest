@@ -8,7 +8,6 @@ import MongoServices.mongo.entity.EndTestProjectSuiteLinkingDAO;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TransformingDtoToDao {
@@ -26,6 +25,7 @@ public class TransformingDtoToDao {
     SuiteIdProjectIdForTestIdDTO suiteIdProjectIdForTestIdDTO = new SuiteIdProjectIdForTestIdDTO();
     suiteIdProjectIdForTestIdDTO.setProjectId(endTestProjectSuiteLinkingDAO.getProjectId());
     suiteIdProjectIdForTestIdDTO.setSuiteId(endTestProjectSuiteLinkingDAO.getSuiteId());
+    suiteIdProjectIdForTestIdDTO.setSuiteName(endTestProjectSuiteLinkingDAO.getSuiteName());
     suiteIdProjectIdForTestIdDTO.setTestId(testId);
     return suiteIdProjectIdForTestIdDTO;
   }
