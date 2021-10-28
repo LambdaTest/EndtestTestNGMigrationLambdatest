@@ -8,7 +8,7 @@
 		<parameter name="version" value="85.0" />
 		<parameter name="platform" value="macOS Catalina" />
 		<classes>
-			<class name="TestngFramwork.ParallelTest" />
+			<class name="testng_framework.ParallelTest" />
 		</classes>
 	</test>
 	
@@ -17,7 +17,7 @@
 		<parameter name="version" value="73.0" />
 		<parameter name="platform" value="Windows 10" />
 		<classes>
-			<class name="TestngFramwork.ParallelTest" />
+			<class name="testng_framework.ParallelTest" />
 		</classes>
 	</test>
 	
@@ -26,7 +26,7 @@
 		<parameter name="version" value="13.0" />
 		<parameter name="platform" value="macOS Catalina" />
 		<classes>
-			<class name="TestngFramwork.ParallelTest" />
+			<class name="testng_framework.ParallelTest" />
 		</classes>
 	</test>
 
