@@ -8,7 +8,7 @@
 		<parameter name="version" value="85.0" />
 		<parameter name="platform" value="macOS Catalina" />
 		<classes>
-			<class name="TestngFramwork.SingleTest" />
+			<class name="testng_framework.SingleTest" />
 		</classes>
 	</test>
 

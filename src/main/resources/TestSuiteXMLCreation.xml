@@ -5,11 +5,10 @@
 
 	<test name="Test1">
 		<parameter name="browser" value="Chrome" />
-		<parameter name="version" value="85.0" />
+		<parameter name="version" value="latest-1" />
 		<parameter name="platform" value="win10" />
 		<classes>
-			<class name="testng_framework.LocalTest" />
-			
+			<class name="endtest_transformer_bots.CreateSuiteFromTestCode" />
 		</classes>
 	</test>
 
