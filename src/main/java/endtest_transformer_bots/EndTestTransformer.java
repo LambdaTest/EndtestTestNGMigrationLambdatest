@@ -45,8 +45,7 @@ public class EndTestTransformer {
   public void createSeleniumStepFromJsonStep(List<TestCaseStepsDTO> listOfTestCaseSteps, SuiteIdProjectIdForTestIdDTO suiteIdProjectIdForTestIdDTO) {
     for (TestCaseStepsDTO t : listOfTestCaseSteps){
       String fileName = suiteIdProjectIdForTestIdDTO.getSuiteName().replace(" ","_")
-              +"______"+t.getName().replace(" ","_").replace("[","")
-                  .replace("]","")+".txt";
+              +"--_--"+t.getName().replace(" ","_").replaceAll("[^a-zA-Z_]", "")+".txt";
       stepToCode.addCodeFromStep(fileName,t);
     }
   }
