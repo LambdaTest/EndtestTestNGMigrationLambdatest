@@ -9,10 +9,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class StepToCode {
+public class StepToCode extends Constant{
 
   public void addCodeFromStep(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    fileName = "logs/"+fileName;
+    fileName = TEST_PATH+fileName;
     switch (testCaseStepsDTO.getType()) {
     case "GetLink":
       getLinkT(fileName, testCaseStepsDTO);
@@ -31,7 +31,7 @@ public class StepToCode {
   }
 
   public void getLinkT(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "getURL(" + testCaseStepsDTO.getParameter1() + ");");
+    writeInFile(fileName, "getURL(\"" + testCaseStepsDTO.getParameter1() + "\");");
   }
 
   public String[] locatorTransform(String using, String Locator) {
