@@ -8,7 +8,7 @@
 		<parameter name="version" value="latest-1" />
 		<parameter name="platform" value="win10" />
 		<classes>
-			<class name="generated_tests.Suit1" />
+			<class name="generated_tests.Individual_test_cases_Browse_Backend" />
 		</classes>
 	</test>
 

@@ -9,11 +9,14 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class WebDriverHelper extends Base {
@@ -504,4 +507,57 @@ public class WebDriverHelper extends Base {
     switchWindow(tabs.get(0));
   }
 
+  public void moveAndClickWithOffset(String[] locator, int x_Coordinate, int y_Coordinate) {
+    WebElement ele = getElement(locator);
+    actions.moveToElement(ele).moveByOffset(x_Coordinate, y_Coordinate).click().perform();
+  }
+
+  public void moveAndDoubleClickWithOffset(String[] locator, int x_Coordinate, int y_Coordinate) {
+    WebElement ele = getElement(locator);
+    actions.moveToElement(ele).moveByOffset(x_Coordinate, y_Coordinate).doubleClick().perform();
+  }
+
+  public boolean isElementClickable(String[] locator) {
+    try {
+      WebElement ele = getElement(locator);
+      WebDriverWait wait = new WebDriverWait(driver, 5);
+      wait.until(ExpectedConditions.elementToBeClickable(ele));
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  public void switchToNextWindow() {
+    Set<String> allWindows = driver.getWindowHandles();
+    String currentWindowID = driver.getWindowHandle();
+    Iterator<String> itr = allWindows.iterator();
+    boolean currWindowFound = false;
+    while (itr.hasNext()) {
+      String itrWindowID = itr.next();
+      if (itrWindowID.equals(currentWindowID)) {
+        currWindowFound = true;
+      }
+      if (currWindowFound) {
+        driver.switchTo().window(itrWindowID);
+      }
+    }
+  }
+
+  public void selectOption(String[] locator, String valueToSelect) {
+    WebElement ele = getElement(locator);
+    Select select = new Select(ele);
+    select.selectByValue(valueToSelect);
+  }
+
+  public boolean isElementAvailable(String[] locator) {
+    boolean isAvailable = false;
+    try {
+      getElement(locator);
+      isAvailable = true;
+    } catch (Exception e) {
+      isAvailable = false;
+    }
+    return isAvailable;
+  }
 }
