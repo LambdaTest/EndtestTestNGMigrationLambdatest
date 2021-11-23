@@ -34,6 +34,9 @@ public class StepToCode extends Constant {
     case "Assert":
       assertWithCondition(fileName, givenTestCaseStepsDTO);
       break;
+    case "Miscellaneous":
+      miscellaneous(fileName, givenTestCaseStepsDTO);
+      break;
     case "Miscellaneous_DoubleClickWithOffset":
       miscellaneousDoubleClickWithOffset(fileName, givenTestCaseStepsDTO);
       break;
@@ -84,6 +87,19 @@ public class StepToCode extends Constant {
       break;
     }
 
+  }
+
+  private void miscellaneous(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+    String switchCondition = testCaseStepsDTO.getParameter1();
+
+    switch (switchCondition) {
+    case "DoubleClick":
+      writeInFile(fileName, "moveAndDoubleClick(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+      break;
+    default:
+      break;
+    }
   }
 
   private void miscellaneousDoubleClickWithOffset(String fileName, TestCaseStepsDTO testCaseStepsDTO) {

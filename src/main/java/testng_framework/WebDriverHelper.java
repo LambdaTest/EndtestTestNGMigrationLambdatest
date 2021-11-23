@@ -512,6 +512,11 @@ public class WebDriverHelper extends Base {
     actions.moveToElement(ele).moveByOffset(x_Coordinate, y_Coordinate).click().perform();
   }
 
+  public void moveAndDoubleClick(String[] locator) {
+    WebElement ele = getElement(locator);
+    actions.moveToElement(ele).doubleClick(ele).perform();
+  }
+
   public void moveAndDoubleClickWithOffset(String[] locator, int x_Coordinate, int y_Coordinate) {
     WebElement ele = getElement(locator);
     actions.moveToElement(ele).moveByOffset(x_Coordinate, y_Coordinate).doubleClick().perform();
