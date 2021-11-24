@@ -131,6 +131,8 @@ public class StepToCode extends Constant {
         "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "SwitchToPreviousTab":
+      writeInFile(fileName, "switchToPreviousTab();");
+      break;
     case "Utilities":
     case "WaitUntil":
     default:

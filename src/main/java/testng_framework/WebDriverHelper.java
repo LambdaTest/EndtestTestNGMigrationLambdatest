@@ -3,14 +3,9 @@ package testng_framework;
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
 import org.apache.logging.log4j.LogManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
 
 import java.util.ArrayList;
@@ -574,6 +569,12 @@ public class WebDriverHelper extends Base {
         driver.switchTo().window(itrWindowID);
       }
     }
+  }
+
+  public void switchToPreviousTab() {
+    Set<String> st = driver.getWindowHandles();
+    Iterator<String> it = st.iterator();
+    driver.switchTo().window(it.next());
   }
 
   public void selectOption(String[] locator, String valueToSelect) {
