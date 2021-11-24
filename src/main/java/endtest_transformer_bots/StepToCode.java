@@ -1,9 +1,11 @@
 package endtest_transformer_bots;
 
 import mongo_services.DTO.response.TestCaseStepsDTO;
+import org.apache.logging.log4j.LogManager;
 import org.testng.Assert;
 import testng_framework.Constant;
 import org.apache.commons.io.FileUtils;
+import testng_framework.WebDriverHelper;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class StepToCode extends Constant {
+
+  private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
 
   public void addCodeFromStep(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
     fileName = TEST_PATH + fileName;
@@ -134,7 +138,9 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "switchToPreviousTab();");
       break;
     case "Utilities":
+      ltLogger.info(testCaseStepsDTO);
     case "WaitUntil":
+      ltLogger.info(testCaseStepsDTO);
     default:
       break;
     }
