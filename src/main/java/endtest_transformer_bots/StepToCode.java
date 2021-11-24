@@ -15,11 +15,7 @@ public class StepToCode extends Constant {
   public void addCodeFromStep(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
     fileName = TEST_PATH + fileName;
     String switchCondition;
-    if (givenTestCaseStepsDTO.getType() == "Miscellaneous") {
-      switchCondition = givenTestCaseStepsDTO.getType() + "_" + givenTestCaseStepsDTO.getParameter1();
-    } else {
-      switchCondition = givenTestCaseStepsDTO.getType();
-    }
+    switchCondition = givenTestCaseStepsDTO.getType();
 
     switch (switchCondition) {
     case "GetLink":
