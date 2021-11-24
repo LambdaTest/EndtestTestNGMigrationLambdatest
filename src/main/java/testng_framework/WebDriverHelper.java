@@ -122,13 +122,13 @@ public class WebDriverHelper extends Base {
     typeText(ele, text);
   }
 
-  public void cleartext(String[] locator) {
+  public void clearText(String[] locator) {
     WebElement ele = getElement(locator);
-    cleartext(ele);
+    clearText(ele);
     ltLogger.info("clear text '{}' successful", ele);
   }
 
-  public void cleartext(WebElement ele) {
+  public void clearText(WebElement ele) {
     ele.clear();
   }
 
@@ -492,6 +492,27 @@ public class WebDriverHelper extends Base {
     actions.doubleClick(ele).perform();
   }
 
+  public void closeAlert() {
+    driver.switchTo().alert().dismiss();
+  }
+
+  public void closeTab() {
+    driver.close();
+  }
+
+  public void goBack() {
+    driver.navigate().back();
+  }
+
+  public void goForward() {
+    driver.navigate().forward();
+  }
+
+  public void switchToIFrame(String[] locator) {
+    WebElement frameElement = getElement(locator);
+    driver.switchTo().frame(frameElement);
+  }
+
   public void openNewTab(String url) {
     driver.executeScript("window.open('" + url + "');");
   }
@@ -512,9 +533,15 @@ public class WebDriverHelper extends Base {
     actions.moveToElement(ele).moveByOffset(x_Coordinate, y_Coordinate).click().perform();
   }
 
-  public void moveAndDoubleClick(String[] locator) {
+  public void clearInput(String[] locator) {
     WebElement ele = getElement(locator);
-    actions.moveToElement(ele).doubleClick(ele).perform();
+    ele.click();
+    ele.clear();
+  }
+
+  public void rightClick(String[] locator) {
+    WebElement ele = getElement(locator);
+    actions.contextClick(ele).perform();
   }
 
   public void moveAndDoubleClickWithOffset(String[] locator, int x_Coordinate, int y_Coordinate) {

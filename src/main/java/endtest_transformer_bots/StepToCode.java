@@ -28,26 +28,17 @@ public class StepToCode extends Constant {
     case "Click":
       clickT(fileName, givenTestCaseStepsDTO);
       break;
-    case "Miscellaneous_MoveAndClickWithOffset":
-      miscellaneousMoveAndClickWithOffset(fileName, givenTestCaseStepsDTO);
-      break;
     case "Assert":
       assertWithCondition(fileName, givenTestCaseStepsDTO);
       break;
     case "Miscellaneous":
       miscellaneous(fileName, givenTestCaseStepsDTO);
       break;
-    case "Miscellaneous_DoubleClickWithOffset":
-      miscellaneousDoubleClickWithOffset(fileName, givenTestCaseStepsDTO);
-      break;
     case "StartIf":
       startIf(fileName, givenTestCaseStepsDTO);
       break;
     case "EndIf":
       endIf(fileName);
-      break;
-    case "Miscellaneous_SwitchToNextTab":
-      writeInFile(fileName, "switchToNextWindow();");
       break;
     case "write":
       writeIntoElement(fileName, givenTestCaseStepsDTO);
@@ -92,21 +83,63 @@ public class StepToCode extends Constant {
   private void miscellaneous(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
     String switchCondition = testCaseStepsDTO.getParameter1();
+    String[] offSetCoordinate;
 
     switch (switchCondition) {
     case "DoubleClick":
-      writeInFile(fileName, "moveAndDoubleClick(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+      writeInFile(fileName, "doubleClickOnElement(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
       break;
+    case "ClearInput":
+      writeInFile(fileName, "clearText(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+      break;
+    case "CloseAlert":
+      writeInFile(fileName, "closeAlert();");
+      break;
+    case "CloseTab":
+      writeInFile(fileName, "closeTab();");
+      break;
+    case "GoBack":
+      writeInFile(fileName, "goBack();");
+      break;
+    case "GoForward":
+      writeInFile(fileName, "goForward();");
+      break;
+    case "Hover":
+      writeInFile(fileName, "mouseHoverOnElement(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+      break;
+    case "OpenNewTab":
+      writeInFile(fileName, "openNewTab(\"" + testCaseStepsDTO.getParameter1() + "\");");
+    case "Refresh":
+      writeInFile(fileName, "pageRefresh();");
+      break;
+    case "RightClick":
+      writeInFile(fileName, "rightClick(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+      break;
+    case "SwitchBack":
+      writeInFile(fileName, "backToMainFrame();");
+      break;
+    case "SwitchToFrame":
+      writeInFile(fileName, "switchToIFrame(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+      break;
+    case "SwitchToNextTab":
+      writeInFile(fileName, "switchToNextWindow();");
+      break;
+    case "MoveAndClickWithOffset":
+      offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
+      writeInFile(fileName,
+        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+      break;
+    case "DoubleClickWithOffset":
+      offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
+      writeInFile(fileName,
+        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+      break;
+    case "SwitchToPreviousTab":
+    case "Utilities":
+    case "WaitUntil":
     default:
       break;
     }
-  }
-
-  private void miscellaneousDoubleClickWithOffset(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
-    String[] offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
-    writeInFile(fileName,
-      "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
   }
 
   private void assertWithCondition(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -128,14 +161,6 @@ public class StepToCode extends Constant {
     default:
       break;
     }
-  }
-
-  private void miscellaneousMoveAndClickWithOffset(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
-    String[] offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
-    writeInFile(fileName,
-      "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
-
   }
 
   public void clickT(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
