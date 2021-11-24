@@ -55,7 +55,7 @@ public class StepToCode extends Constant {
     case "SnippingTool":
       snippingTool(fileName, givenTestCaseStepsDTO);
       break;
-    case "Take Screenshot":
+    case "TakeScreenshot":
       TakeScreenshoot(fileName,givenTestCaseStepsDTO);
       break;
     case "Pause" :
