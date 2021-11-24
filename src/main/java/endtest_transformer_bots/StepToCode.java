@@ -142,6 +142,7 @@ public class StepToCode extends Constant {
     case "WaitUntil":
       ltLogger.info(testCaseStepsDTO);
     default:
+      ltLogger.info(testCaseStepsDTO);
       break;
     }
   }
