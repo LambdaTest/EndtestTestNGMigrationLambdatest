@@ -96,18 +96,19 @@ public class StepToCode extends Constant {
     case "ExtractNumberOfElements":
     case "ExtractNumberOfChildElements":
     default:
-     System.out.println("This parameter 2 is not implemented " + temp);
+     System.out.println("This parameter 2 is not implemented " + temp );
+      System.out.println("Test Case DTO " + testCaseStepsDTO );
     }
   }
 
   private void setVariableFromElement(String fileName, TestCaseStepsDTO testCaseStepsDTO, String variableName) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter3());
     writeInFile(fileName,
-      "String" + variableName + " = getText(new String[] { " + locator[0] + ", \" " + locator[1] + " \"  } );");
+      "String" + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
   }
 
   private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
-    writeInFile(fileName, "String " + variableName + "= \" " + variableValue + "\";");
+    writeInFile(fileName, "String " + variableName + "= \"" + variableValue + "\";");
   }
 
   private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
