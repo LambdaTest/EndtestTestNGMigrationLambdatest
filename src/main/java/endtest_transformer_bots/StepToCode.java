@@ -122,7 +122,7 @@ public class StepToCode extends Constant {
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \"" + "screenshoot.png);");
+      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },screenshoot.png);");
   }
 
   private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -133,7 +133,7 @@ public class StepToCode extends Constant {
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "selectOption(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \"" + testCaseStepsDTO
+      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
         .getParameter2() + "\");");
   }
 
