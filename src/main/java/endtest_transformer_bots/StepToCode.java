@@ -238,6 +238,16 @@ public class StepToCode extends Constant {
     case "WaitUntil":
       //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
+      break;
+    case "DeleteCookies":
+      deleteCookies(fileName, testCaseStepsDTO);
+      break;
+    case "ClearLocalStorage":
+      clearLocalStorage(fileName, testCaseStepsDTO);
+      break;
+    case "ClearSessionStorage":
+      clearSessionStorage(fileName, testCaseStepsDTO);
+      break;
     default:
       //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
@@ -257,6 +267,30 @@ public class StepToCode extends Constant {
       System.out.println("Test Case DTO " + testCaseStepsDTO);
       break;
     }
+  }
+
+  private void deleteCookies(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    String deleteCookieType = testCaseStepsDTO.getParameter2();
+
+    switch (deleteCookieType) {
+    case "DeleteAllCookies":
+      writeInFile(fileName, "deleteAllCookies();");
+      break;
+    case "DeleteCookie":
+      writeInFile(fileName, "deleteSpecificCookie(" + testCaseStepsDTO.getParameter3() + ");");
+      break;
+    default:
+      System.out.println("Test Case DTO " + testCaseStepsDTO);
+      break;
+    }
+  }
+
+  public void clearLocalStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "javascriptExecution(String.format(\"window.localStorage.clear();\"));");
+  }
+
+  public void clearSessionStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "javascriptExecution(String.format(\"window.sessionStorage.clear();\"));");
   }
 
   private void assertWithCondition(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
