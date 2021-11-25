@@ -61,7 +61,7 @@ public class WebDriverHelper extends Base {
     String using = locator[0].toLowerCase();
     String locatorValue = locator[1];
     WebElement ele = null;
-    if (using.contentEquals("id")) {
+    if (using.contentEquals(ID)) {
       ele = driver.findElementById(locatorValue);
     } else if (using.contentEquals(CLASS)) {
       ele = driver.findElementByClassName(locatorValue);
@@ -77,7 +77,8 @@ public class WebDriverHelper extends Base {
       ele = driver.findElementByLinkText(locatorValue);
     } else if (using.contentEquals(PARTIAL_LINK)) {
       ele = driver.findElementByPartialLinkText(locatorValue);
-    }
+    } else if (using.contentEquals(TEXT_INSIDE))
+      ele = driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]");
     ltLogger.info("element '{}' found", ele);
     return ele;
   }
@@ -186,23 +187,32 @@ public class WebDriverHelper extends Base {
     String using = locator[0].toLowerCase();
     String locatorValue = locator[1];
 
-    if (using.contentEquals("id")) {
+    if (using.contentEquals(ID)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementById(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementById(locatorValue)));
-    } else if (using.contentEquals("class")) {
+    } else if (using.contentEquals(CLASS)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByClassName(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByClassName(locatorValue)));
-    } else if (using.contentEquals("name")) {
+    } else if (using.contentEquals(NAME)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByName(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByName(locatorValue)));
-    } else if (using.contentEquals("xpath")) {
+    } else if (using.contentEquals(XPATH)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByXPath(locatorValue)));
-    } else if (using.contentEquals("css")) {
+    } else if (using.contentEquals(CSS)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByCssSelector(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByCssSelector(locatorValue)));
+    } else if (using.contentEquals(TEXT_INSIDE)) {
+      wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]")));
+      wait.until(
+        ExpectedConditions.elementToBeClickable(driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]")));
+    } else if (using.contentEquals(LINK_TEXT)) {
+      wait.until(ExpectedConditions.visibilityOf(driver.findElementByLinkText(locatorValue)));
+      wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByLinkText(locatorValue)));
+    } else if (using.contentEquals(PARTIAL_LINK)) {
+      wait.until(ExpectedConditions.visibilityOf(driver.findElementByPartialLinkText(locatorValue)));
+      wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByPartialLinkText(locatorValue)));
     }
-
   }
 
   public long waitForElementToDisappear(String[] locator, int timeout) {
@@ -595,6 +605,38 @@ public class WebDriverHelper extends Base {
     }
     return isAvailable;
   }
+
+  public void assertion(String assertionType, String[] locator) {
+    switch (assertionType) {
+    case "CheckClickableElement":
+      Assert.assertTrue(isElementClickable(locator));
+      break;
+    case "CheckClickableNotElement":
+      Assert.assertFalse(isElementClickable(locator));
+      break;
+    case "CheckElement":
+      Assert.assertTrue(isElementDisplayed(locator));
+      break;
+    case "CheckElementScreenshot":
+    case "CheckContainsValue":
+    case "CheckNotContainsValue":
+    case "CheckNotElement":
+    case "CheckPageScreenshot":
+    case "CheckUrlContains":
+    case "CheckVisibleElement":
+    case "CheckVisibleNotElement":
+    case "CountChildElements":
+    case "VariableAssertion":
+    default:
+      ltLogger.info(testCaseStepsDTO);
+    }
+  }
+
+  public boolean isElementDisplayed(String[] locator) {
+    ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
+    return getElement(locator).isDisplayed();
+  }
+}
 
   //pathToFile should contain path + FileName.png
   public void takeScreenshoot(String pathToFile) {
