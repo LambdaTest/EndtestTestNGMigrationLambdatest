@@ -185,29 +185,29 @@ public class WebDriverHelper extends Base {
     String using = locator[0].toLowerCase();
     String locatorValue = locator[1];
 
-    if (using.contentEquals("id")) {
+    if (using.contentEquals(ID)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementById(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementById(locatorValue)));
-    } else if (using.contentEquals("class")) {
+    } else if (using.contentEquals(CLASS)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByClassName(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByClassName(locatorValue)));
-    } else if (using.contentEquals("name")) {
+    } else if (using.contentEquals(NAME)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByName(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByName(locatorValue)));
-    } else if (using.contentEquals("xpath")) {
+    } else if (using.contentEquals(XPATH)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByXPath(locatorValue)));
-    } else if (using.contentEquals("css")) {
+    } else if (using.contentEquals(CSS)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByCssSelector(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByCssSelector(locatorValue)));
-    } else if (using.contentEquals("Text Inside")) {
+    } else if (using.contentEquals(TEXT_INSIDE)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]")));
       wait.until(
         ExpectedConditions.elementToBeClickable(driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]")));
-    } else if (using.contentEquals("link Text")) {
+    } else if (using.contentEquals(LINK_TEXT)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByLinkText(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByLinkText(locatorValue)));
-    } else if (using.contentEquals("Partial Link Text")) {
+    } else if (using.contentEquals(PARTIAL_LINK)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByPartialLinkText(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByPartialLinkText(locatorValue)));
     }

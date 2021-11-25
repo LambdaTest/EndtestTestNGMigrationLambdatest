@@ -12,6 +12,7 @@ public class Constant {
   protected static final String NAME = "name";
   protected static final String TAG_NAME = "tagname";
   protected static final String LINK = "link";
+  protected static final String LINK_TEXT = "Link Text";
   protected static final String PARTIAL_LINK = "partial_link";
   protected static final String TEXT_INSIDE = "Text Inside";
   protected static final String SUITE_XML_PATH = System.getProperty("user.dir")
