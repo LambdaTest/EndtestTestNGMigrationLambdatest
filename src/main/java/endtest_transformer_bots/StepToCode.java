@@ -11,6 +11,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class StepToCode extends Constant {
 
@@ -50,13 +52,16 @@ public class StepToCode extends Constant {
       snippingTool(fileName, givenTestCaseStepsDTO);
       break;
     case "TakeScreenshot":
-      TakeScreenshoot(fileName,givenTestCaseStepsDTO);
+      TakeScreenshoot(fileName, givenTestCaseStepsDTO);
       break;
-    case "Pause" :
-      pause(fileName,givenTestCaseStepsDTO);
+    case "Pause":
+      pause(fileName, givenTestCaseStepsDTO);
       break;
     case "ExecuteJS":
-      executeJS(fileName,givenTestCaseStepsDTO);
+      executeJS(fileName, givenTestCaseStepsDTO);
+      break;
+    case "SetVariable":
+      setVariable(fileName, givenTestCaseStepsDTO);
       break;
     default:
       System.out.println("step not automated" + givenTestCaseStepsDTO);
@@ -64,34 +69,76 @@ public class StepToCode extends Constant {
     }
   }
 
-  private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "javascriptExecution("+testCaseStepsDTO.getParameter1()+",testDriver);");
+  private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    String setVariableType = testCaseStepsDTO.getParameter2();
+    switch (setVariableType) {
+    case "EnterValue":
+      setVariableEnterValue(fileName, testCaseStepsDTO.getParameter1(), testCaseStepsDTO.getParameter3());
+      break;
+    case "ExtractFromElement":
+      setVariableFromElement(fileName, testCaseStepsDTO, testCaseStepsDTO.getParameter1());
+      break;
+    case "EnterPassword":
+    case "GenerateRandomNumber":
+    case "GenerateRandomString":
+    case "GenerateRandomEmail":
+    case "Timestamp":
+    case "ExtractFromElementOCR":
+    case "ExtractAttributeFromElement":
+    case "ExtractFromJS":
+    case "ExtractSelectorFromElement":
+    case "ExtractResultFromQuery":
+    case "ExtractUrl":
+    case "ExtractTitle":
+    case "ExtractNumberOfElements":
+    case "ExtractNumberOfChildElements":
+    default:
+      System.out.println("This parameter 2 is not implemented " + setVariableType);
+      System.out.println("Test Case DTO " + testCaseStepsDTO);
+    }
   }
 
-  private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO){
-    writeInFile(fileName, "waitForTime("+testCaseStepsDTO.getParameter1()+");");
+  private void setVariableFromElement(String fileName, TestCaseStepsDTO testCaseStepsDTO, String variableName) {
+    String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter3());
+    writeInFile(fileName,
+      "String" + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+  }
+
+  private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
+    writeInFile(fileName, "String " + variableName + "= \"" + variableValue + "\";");
+  }
+
+  private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "javascriptExecution(" + testCaseStepsDTO.getParameter1() + ",driver);");
+  }
+
+  private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "waitForTime(" + testCaseStepsDTO.getParameter1() + ");");
   }
 
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
-    writeInFile(fileName, "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \""+"screenshoot.png);");
+    writeInFile(fileName,
+      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },/logs/ss/" + getRandomString(
+        6) + ".png);");
   }
 
-  private void TakeScreenshoot(String fileName,TestCaseStepsDTO testCaseStepsDTO ){
+  private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
-    writeInFile(fileName, "takeScreenshoot(screenshoot.png);");
+    writeInFile(fileName, "takeScreenshoot(/logs/ss/" + getRandomString(6) + ".png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "selectOption(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
+      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
+        .getParameter2() + "\");");
   }
 
   private void writeIntoElement(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
-    writeInFile(fileName,
-      "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
+    writeInFile(fileName, "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
+      .getParameter2() + "\");");
   }
 
   private void endIf(String fileName) {
@@ -158,24 +205,26 @@ public class StepToCode extends Constant {
     case "MoveAndClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
+          .toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "DoubleClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
+          .toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "SwitchToPreviousTab":
       writeInFile(fileName, "switchToPreviousTab();");
       break;
     case "Utilities":
-//      ltLogger.info(testCaseStepsDTO);
+      //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
     case "WaitUntil":
-//      ltLogger.info(testCaseStepsDTO);
+      //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
     default:
-//      ltLogger.info(testCaseStepsDTO);
+      //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
       break;
     }
@@ -191,7 +240,8 @@ public class StepToCode extends Constant {
       break;
     case "CheckContainsValue":
       writeInFile(fileName,
-        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO.getParameter3() + "\"));");
+        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO
+          .getParameter3() + "\"));");
       break;
     case "CheckElement":
       writeInFile(fileName,
@@ -245,5 +295,23 @@ public class StepToCode extends Constant {
       e.printStackTrace();
       System.out.println(status);
     }
+  }
+
+  public String getRandomString(int size) {
+    byte[] bytArray = new byte[256];
+    new Random().nextBytes(bytArray);
+
+    String randomStr = new String(bytArray, StandardCharsets.UTF_8);
+    StringBuilder strBuilder = new StringBuilder();
+    // remove all special char
+    String alphaStr = randomStr.replaceAll("[^A-Za-z]", "");
+
+    for (int i = 0; i < alphaStr.length(); i++) {
+      if (size > 0 && (Character.isLetter(alphaStr.charAt(i)) || Character.isDigit(alphaStr.charAt(i)))) {
+        strBuilder.append(alphaStr.charAt(i));
+      }
+      size--;
+    }
+    return strBuilder.toString();
   }
 }
