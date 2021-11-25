@@ -22,8 +22,6 @@ public class StepToCode extends Constant {
     fileName = TEST_PATH + fileName;
     String switchCondition;
     switchCondition = givenTestCaseStepsDTO.getType();
-    EndTestTransformer endTestTransformation = new EndTestTransformer();
-
     switch (switchCondition) {
     case "GetLink":
       getLinkT(fileName, givenTestCaseStepsDTO);
@@ -65,7 +63,7 @@ public class StepToCode extends Constant {
       setVariable(fileName, givenTestCaseStepsDTO);
       break;
     case "ImportCase":
-      endTestTransformation.createSeleniumStepForTestID(fileName,givenTestCaseStepsDTO.getParameter1());
+      new EndTestTransformer().createSeleniumStepForTestID(fileName,givenTestCaseStepsDTO.getParameter1());
       break;
     default:
       System.out.println("step not automated" + givenTestCaseStepsDTO);
