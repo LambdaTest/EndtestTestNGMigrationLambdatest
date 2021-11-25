@@ -627,7 +627,6 @@ public class WebDriverHelper extends Base {
     case "VariableAssertion":
     default:
       ltLogger.info(testCaseStepsDTO);
-
     }
   }
 
