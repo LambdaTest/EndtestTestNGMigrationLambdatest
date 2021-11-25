@@ -76,11 +76,11 @@ public class StepToCode extends Constant {
   }
 
   private void endElse(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
-    writeInFile(fileName, "}else{");
+    writeInFile(fileName, "}");
   }
 
   private void startElse(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
-    writeInFile(fileName, "else }");
+    writeInFile(fileName, "}else{");
   }
 
   private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
