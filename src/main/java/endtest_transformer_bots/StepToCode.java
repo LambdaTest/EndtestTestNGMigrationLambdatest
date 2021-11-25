@@ -289,15 +289,8 @@ public class StepToCode extends Constant {
     String[] locator = locatorTransform(map.get("locatorType"), map.get("locator"));
     String waitCondition = map.get("waitCondition");
 
-    switch (waitCondition) {
-    case "CheckElement":
-      writeInFile(fileName,"waitUntilElementPresent(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
-        "maxTime") + "," + map.get("theRefresh") + ");");
-      break;
-    default:
-      System.out.println("Test Case DTO " + testCaseStepsDTO);
-      break;
-    }
+    writeInFile(fileName,"waitUntil(" + waitCondition + "new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
+      "maxTime") + "," + map.get("theRefresh") + ");");
   }
 
   public void clearLocalStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {

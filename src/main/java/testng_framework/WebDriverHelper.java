@@ -251,6 +251,14 @@ public class WebDriverHelper extends Base {
     waitForElement(locator, 30);
   }
 
+  public boolean isEnabled(String[] locator, int waitTime) {
+    try {
+      return getElement(locator, waitTime).isEnabled();
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   public boolean isDisplayed(String[] locator) {
     String methodName = new Object() {
     }.getClass().getEnclosingMethod().getName();
@@ -679,18 +687,65 @@ public class WebDriverHelper extends Base {
     driver.manage().deleteCookieNamed(cookieName);
   }
 
-  public void waitUntilElementPresent(String[] locator, String maxTime, String theRefresh) {
+  public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
     FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime)))
       .pollingEvery(refreshValue(theRefresh)).ignoring(NoSuchElementException.class);
 
+    switch (waitCondition) {
+    case "CheckElement":
+      wait.until(driver1 -> {
+        try {
+          return getElement(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckClickableElement":
     wait.until(driver1 -> {
       try {
-        return getElement(locator, 0);
+        return isDisplayed(locator, 0) && isEnabled(locator, 0);
       } catch (Exception e) {
         pageRefresh();
       }
       return null;
     });
+      break;
+    case "CheckEnabledElement":
+      wait.until(driver1 -> {
+        try {
+          return isEnabled(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckVisibleElement":
+      wait.until(driver1 -> {
+        try {
+          return isDisplayed(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckVisibleNotElement":
+      wait.until(driver1 -> {
+        try {
+          return !isDisplayed(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    default:
+      System.out.println("Wait condition not handled");
+      break;
+    }
   }
 
   private Duration refreshValue(String theRefresh) {
