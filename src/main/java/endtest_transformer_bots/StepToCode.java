@@ -25,7 +25,6 @@ public class StepToCode extends Constant {
     fileName = TEST_PATH + fileName;
     String switchCondition;
     switchCondition = givenTestCaseStepsDTO.getType();
-
     switch (switchCondition) {
     case "GetLink":
       getLinkT(fileName, givenTestCaseStepsDTO);
@@ -66,6 +65,8 @@ public class StepToCode extends Constant {
     case "SetVariable":
       setVariable(fileName, givenTestCaseStepsDTO);
       break;
+    case "ImportCase":
+      new EndTestTransformer().createSeleniumStepForTestID(fileName,givenTestCaseStepsDTO.getParameter1());
     case "StartElse":
       startElse(fileName, givenTestCaseStepsDTO);
       break;
@@ -148,14 +149,13 @@ public class StepToCode extends Constant {
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
-        .getParameter2() + "\");");
+      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
   }
 
   private void writeIntoElement(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
-    writeInFile(fileName, "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
-      .getParameter2() + "\");");
+    writeInFile(fileName,
+      "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
   }
 
   private void endIf(String fileName) {
@@ -222,14 +222,12 @@ public class StepToCode extends Constant {
     case "MoveAndClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
-          .toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "DoubleClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
-          .toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "SwitchToPreviousTab":
       writeInFile(fileName, "switchToPreviousTab();");
@@ -271,8 +269,7 @@ public class StepToCode extends Constant {
       break;
     case "CheckContainsValue":
       writeInFile(fileName,
-        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO
-          .getParameter3() + "\"));");
+        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO.getParameter3() + "\"));");
       break;
     case "CheckElement":
       writeInFile(fileName,

@@ -45,9 +45,24 @@ public class EndTestTransformer {
   public void createSeleniumStepFromJsonStep(List<TestCaseStepsDTO> listOfTestCaseSteps,
     SuiteIdProjectIdForTestIdDTO suiteIdProjectIdForTestIdDTO) {
     for (TestCaseStepsDTO t : listOfTestCaseSteps) {
-      String fileName = suiteIdProjectIdForTestIdDTO.getSuiteName().replace(" ", "_").replaceAll("[^a-zA-Z_]", "") + "--_--" + t.getName()
-        .replace(" ", "_").replaceAll("[^a-zA-Z_]", "") + ".txt";
+      String fileName = suiteIdProjectIdForTestIdDTO.getSuiteName().replace(" ", "_")
+        .replaceAll("[^a-zA-Z_]", "") + "--_--" + t.getName().replace(" ", "_").replaceAll("[^a-zA-Z_]", "") + ".txt";
       stepToCode.addCodeFromStep(fileName, t);
+    }
+  }
+
+  public void createSeleniumStepForTestID(String filename, String testID) {
+    ApiHelper apiHelper = new ApiHelper();
+    List<TestCaseStepsDTO> listOfTestCaseSteps = apiHelper.convertJsonToObject(
+      apiHelper.getReqAsString("http://localhost:9990/endTest/getResultBasedOnFieldValue/test_case_id?value=" + testID),
+      new TypeToken<List<TestCaseStepsDTO>>() {
+      }.getType());
+
+    System.out.println(listOfTestCaseSteps);
+
+    for (TestCaseStepsDTO t : listOfTestCaseSteps) {
+      System.out.println(t);
+      stepToCode.addCodeFromStep(filename, t);
     }
   }
 
