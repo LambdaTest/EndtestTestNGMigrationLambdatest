@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.logging.log4j.LogManager;
-import org.testng.Assert;
 import testng_framework.Constant;
 import org.apache.commons.io.FileUtils;
 import testng_framework.WebDriverHelper;
@@ -17,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Random;
 
-public class StepToCode extends Constant {
+public class StepToCode extends WebDriverHelper {
 
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
 
@@ -86,7 +85,7 @@ public class StepToCode extends Constant {
     writeInFile(fileName, "}else{");
   }
 
-  private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+  public void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String setVariableType = testCaseStepsDTO.getParameter2();
     switch (setVariableType) {
     case "EnterValue":
@@ -148,14 +147,13 @@ public class StepToCode extends Constant {
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
-        .getParameter2() + "\");");
+      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
   }
 
   private void writeIntoElement(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
-    writeInFile(fileName, "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
-      .getParameter2() + "\");");
+    writeInFile(fileName,
+      "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
   }
 
   private void endIf(String fileName) {
@@ -222,14 +220,12 @@ public class StepToCode extends Constant {
     case "MoveAndClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
-          .toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "DoubleClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
-          .toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "SwitchToPreviousTab":
       writeInFile(fileName, "switchToPreviousTab();");
@@ -252,8 +248,7 @@ public class StepToCode extends Constant {
     String method = map.get("method");
     switch (method) {
     case "GetTextLength":
-      writeInFile(fileName,
-        "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
+      writeInFile(fileName, "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
       break;
     default:
       System.out.println("Test Case DTO " + testCaseStepsDTO);
@@ -271,8 +266,7 @@ public class StepToCode extends Constant {
       break;
     case "CheckContainsValue":
       writeInFile(fileName,
-        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO
-          .getParameter3() + "\"));");
+        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO.getParameter3() + "\"));");
       break;
     case "CheckElement":
       writeInFile(fileName,
@@ -351,4 +345,89 @@ public class StepToCode extends Constant {
     return new Gson().fromJson(str, new TypeToken<HashMap<String, String>>() {
     }.getType());
   }
+
+  public void assertion(String fileName, TestCaseStepsDTO testCaseStepsDTO) throws IOException {
+    String[] locator;
+    fileName = TEST_PATH + fileName;
+    String assertionType = testCaseStepsDTO.getParameter1();
+
+    switch (assertionType) {
+    case "CheckClickableElement":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      writeInFile(fileName,
+        "Assert.assertTrue(isElementClickable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      //      Assert.assertTrue(isElementClickable(locator));
+      break;
+    case "CheckClickableNotElement":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      writeInFile(fileName,
+        "Assert.assertFalse(isElementClickable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      //      Assert.assertFalse(isElementClickable(locator));
+      break;
+    case "CheckElement":
+    case "CheckVisibleElement":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      writeInFile(fileName,
+        "Assert.assertTrue(isElementDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      //      Assert.assertTrue(isElementDisplayed(locator));
+      break;
+    case "CheckNotElement":
+    case "CheckVisibleNotElement":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      writeInFile(fileName,
+        "Assert.assertFalse(isElementDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      //      Assert.assertFalse(isElementDisplayed(locator));
+      break;
+    case "CheckContainsValue":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      writeInFile(fileName,
+        "Assert.assertTrue(checkContainsValue(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter3() + "\");");
+      //      Assert.assertTrue(checkContainsValue(locator, value), "Value not present");
+      break;
+    case "CheckNotContainsValue":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      writeInFile(fileName,
+        "Assert.assertFalse(checkContainsValue(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter3() + "\");");
+      //      Assert.assertFalse(checkContainsValue(locator, value), "Value is present");
+      break;
+    case "CheckUrlContains":
+//      String url = testCaseStepsDTO.getParameter1();
+      writeInFile(fileName,
+        "Assert.assertTrue(checkUrlContains(" + testCaseStepsDTO.getParameter1() + ", \"" + testCaseStepsDTO.getParameter2() + "\");");
+      //      Assert.assertTrue(checkUrlContains(url, value));
+      break;
+    case "CountChildElements":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      writeInFile(fileName,
+        "Assert.assertEquals(getChildElements(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }.size(), \"" + testCaseStepsDTO.getParameter3() + "\");");
+      //      Assert.assertEquals(getChildElements(locator).size(), value);
+      break;
+    case "CheckElementScreenshot":
+      locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
+      //      getURL(testCaseStepsDTO.getParameter3());
+      //      takeScreenshootOfParticularElement(locator, RESOURCES_DIRECTORY + "files/actual_Image.png");
+      //      compareImage(new File(RESOURCES_DIRECTORY + "files/expected_Image.png"), new File(RESOURCES_DIRECTORY + "files/actual_Image.png"));
+      writeInFile(fileName,
+        "getURL(" + testCaseStepsDTO.getParameter3() + "\");\n" + "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
+      break;
+    case "CheckPageScreenshot":
+      //      getURL(testCaseStepsDTO.getParameter2());
+      //      takeScreenshoot(RESOURCES_DIRECTORY + "files/actual_Image.png");
+      //      compareImage(new File(RESOURCES_DIRECTORY + "files/expected_Image.png"), new File(RESOURCES_DIRECTORY + "files/actual_Image.png"));
+      writeInFile(fileName,
+        "getURL(" + testCaseStepsDTO.getParameter2() + "\");\n" + "takeScreenshoot(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
+      break;
+    case "VariableAssertion":
+      //      String variableAssertionType = testCaseStepsDTO.getLocator();
+      //      String variable = testCaseStepsDTO.getParameter2();
+      //      String value = testCaseStepsDTO.getParameter3();
+      writeInFile(fileName,
+        "Assert.assertEquals(checkVariableAssertion(" + testCaseStepsDTO.getLocator() + ", \"" + testCaseStepsDTO.getParameter3() + ", \"" + testCaseStepsDTO.getParameter3() + "\");");
+      //      Assert.assertTrue(checkVariableAssertion(variableAssertionType, value, variable));
+      break;
+    default:
+      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
+    }
+  }
+
 }

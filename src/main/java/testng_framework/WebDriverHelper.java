@@ -1,5 +1,6 @@
 package testng_framework;
 
+import endtest_transformer_bots.StepToCode;
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
 import mongo_services.DTO.response.TestCaseStepsDTO;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
+  StepToCode stepToCode = new StepToCode();
 
   public WebDriverHelper() {
     super();
@@ -611,54 +613,55 @@ public class WebDriverHelper extends Base {
     }
     return isAvailable;
   }
-
-  public void assertion(String assertionType, String[] locator, String value, String variableAssertionType)
-    throws IOException {
-    SoftAssert softAssert = EnvSetup.SOFT_ASSERT.get();
-    switch (assertionType) {
-    case "CheckClickableElement":
-      softAssert.assertTrue(isElementClickable(locator));
-      break;
-    case "CheckClickableNotElement":
-      softAssert.assertFalse(isElementClickable(locator));
-      break;
-    case "CheckElement":
-    case "CheckVisibleElement":
-      softAssert.assertTrue(isElementDisplayed(locator));
-      break;
-    case "CheckNotElement":
-    case "CheckVisibleNotElement":
-      softAssert.assertFalse(isElementDisplayed(locator));
-      break;
-    case "CheckContainsValue": // I am checking the whole value, shall I check some part of it or the whole?
-      softAssert.assertTrue(checkContainsValue(locator, value), "Value not present");
-      break;
-    case "CheckNotContainsValue":
-      softAssert.assertFalse(checkContainsValue(locator, value), "Value is present");
-      break;
-    case "CheckUrlContains":
-      softAssert.assertFalse(checkUrlContains(locator, value), "URL is present");
-      break;
-    case "CountChildElements":
-      softAssert.assertEquals(getChildElements(locator).size(), value, "Count of child elements are not matched");
-      break;
-    case "CheckElementScreenshot":
-      takeScreenshootOfParticularElement(locator, RESOURCES_DIRECTORY + "files/actual_Image.png");
-      compareImage(new File(RESOURCES_DIRECTORY + "files/expected_Image.png"),
-        new File(RESOURCES_DIRECTORY + "files/actual_Image.png"));
-      break;
-    case "CheckPageScreenshot":
-      takeScreenshoot(RESOURCES_DIRECTORY + "files/actual_Image.png");
-      compareImage(new File(RESOURCES_DIRECTORY + "files/expected_Image.png"),
-        new File(RESOURCES_DIRECTORY + "files/actual_Image.png"));
-      break;
-    case "VariableAssertion":
-    default:
-//      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
-      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
-    }
-    EnvSetup.SOFT_ASSERT.set(softAssert);
-  }
+  //
+  //  public void assertion(String assertionType, String[] locator, String value, String variableAssertionType)
+  //    throws IOException {
+  //    SoftAssert softAssert = EnvSetup.SOFT_ASSERT.get();
+  //    switch (assertionType) {
+  //    case "CheckClickableElement":
+  //      softAssert.assertTrue(isElementClickable(locator));
+  //      break;
+  //    case "CheckClickableNotElement":
+  //      softAssert.assertFalse(isElementClickable(locator));
+  //      break;
+  //    case "CheckElement":
+  //    case "CheckVisibleElement":
+  //      softAssert.assertTrue(isElementDisplayed(locator));
+  //      break;
+  //    case "CheckNotElement":
+  //    case "CheckVisibleNotElement":
+  //      softAssert.assertFalse(isElementDisplayed(locator));
+  //      break;
+  //    case "CheckContainsValue":
+  //      softAssert.assertTrue(checkContainsValue(locator, value), "Value not present");
+  //      break;
+  //    case "CheckNotContainsValue":
+  //      softAssert.assertFalse(checkContainsValue(locator, value), "Value is present");
+  //      break;
+  //    case "CheckUrlContains":
+  //      softAssert.assertFalse(checkUrlContains(locator, value), "URL is present");
+  //      break;
+  //    case "CountChildElements":
+  //      softAssert.assertEquals(getChildElements(locator).size(), value, "Count of child elements are not matched");
+  //      break;
+  //    case "CheckElementScreenshot":
+  //      takeScreenshootOfParticularElement(locator, RESOURCES_DIRECTORY + "files/actual_Image.png");
+  //      compareImage(new File(RESOURCES_DIRECTORY + "files/expected_Image.png"),
+  //        new File(RESOURCES_DIRECTORY + "files/actual_Image.png"));
+  //      break;
+  //    case "CheckPageScreenshot":
+  //      takeScreenshoot(RESOURCES_DIRECTORY + "files/actual_Image.png");
+  //      compareImage(new File(RESOURCES_DIRECTORY + "files/expected_Image.png"),
+  //        new File(RESOURCES_DIRECTORY + "files/actual_Image.png"));
+  //      break;
+  //    case "VariableAssertion":
+  //      softAssert.assertEquals(value,"");
+  //    default:
+  ////      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
+  //      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
+  //    }
+  //    EnvSetup.SOFT_ASSERT.set(softAssert);
+  //  }
 
   public boolean isElementDisplayed(String[] locator) {
     ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
@@ -667,7 +670,7 @@ public class WebDriverHelper extends Base {
 
   public boolean checkContainsValue(String[] locator, String value) {
     ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
-    return getElement(locator).getText().contentEquals(value);
+    return getElement(locator).getText().contains(value);
   }
 
   public boolean checkUrlContains(String[] locator, String value) {
@@ -676,7 +679,6 @@ public class WebDriverHelper extends Base {
   }
 
   public List<WebElement> getChildElements(String[] locator) {
-    //identify child nodes with ./child::* expression in xpath
     return getElement(locator).findElements(By.xpath("./child::*"));
   }
 
@@ -701,15 +703,24 @@ public class WebDriverHelper extends Base {
     EnvSetup.SOFT_ASSERT.set(softAssert);
   }
 
-  public boolean checkVariableAssertion(String variableAssertionType) {
+  public boolean checkVariableAssertion(String variableAssertionType, String value, String variable) {
     switch (variableAssertionType) {
     case "variableMatchesValue":
+      return variable.equalsIgnoreCase(value);
     case "variableContainsValue":
+      return variable.contains(value);
     case "variableGreaterThanValue":
+      return Integer.parseInt(variable) > Integer.parseInt(value);
     case "variableGreaterThanOrEqualsValue":
+      return Integer.parseInt(variable) >= Integer.parseInt(value);
     case "variableLessThanValue":
+      return Integer.parseInt(variable) < Integer.parseInt(value);
+    case "variableEmpty":
+      return (variable == null);
+    default:
+      System.out.println("Variable assertion is not valid : " + variableAssertionType);
     }
-    return true;
+    return false;
   }
 
   //pathToFile should contain path + FileName.png
@@ -741,5 +752,27 @@ public class WebDriverHelper extends Base {
 
   public int getTextLength(String str) {
     return str.length();
+  }
+
+  public void pressKey(String[] locator, String key) {
+    switch (key) {
+    case "ENTER":
+      getElement(locator).sendKeys(Keys.ENTER);
+      break;
+    case "BACK_SPACE":
+      getElement(locator).sendKeys(Keys.BACK_SPACE);
+      break;
+    default:
+      System.out.println("The key provided is not available: " + key);
+    }
+  }
+
+  public void printResults(String item, String message) {
+    switch (item) {
+    case "Note":
+    case "Variable":
+      javascriptExecution("console.error('" + message + " via error command" + "')", driver);
+      System.out.println(message);
+    }
   }
 }

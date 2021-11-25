@@ -31,7 +31,7 @@ public class Constant {
   protected static final String TEST_START_BODY = "  @Test\n" + "  public void <addTestName>() {";
   protected static final String TEST_END_BODY = "    status = \"passed\"; \n " + "  }\n";
   protected static final String TEST_NAME_PLACEHOLDER_IN_TEST = "<addTestName>";
-  protected static final String RESOURCES_DIRECTORY = "src/main/resources/";
+  protected static final String RESOURCES_DIRECTORY = System.getProperty("user.dir") + "src/main/resources/";
 
   public static Map<String, String> locatorUsing = getLocatorUsing();
 
