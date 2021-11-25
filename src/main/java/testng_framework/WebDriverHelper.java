@@ -2,6 +2,7 @@ package testng_framework;
 
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
+import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
@@ -254,9 +255,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger
-        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
-          locator, methodName);
+      ltLogger.info(
+        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
+        methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -628,7 +629,8 @@ public class WebDriverHelper extends Base {
     case "CountChildElements":
     case "VariableAssertion":
     default:
-      ltLogger.info(testCaseStepsDTO);
+//      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
+      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
     }
   }
 
@@ -636,7 +638,6 @@ public class WebDriverHelper extends Base {
     ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
     return getElement(locator).isDisplayed();
   }
-}
 
   //pathToFile should contain path + FileName.png
   public void takeScreenshoot(String pathToFile) {
@@ -652,6 +653,7 @@ public class WebDriverHelper extends Base {
       ltLogger.error("Not able to capture and transfer file");
     }
   }
+
   //pathToFile should contain path + FileName.png
   public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
     WebElement webElement = getElement(locator);

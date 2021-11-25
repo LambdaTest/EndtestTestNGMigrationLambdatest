@@ -40,7 +40,7 @@ public class StepToCode extends Constant {
     case "EndIf":
       endIf(fileName);
       break;
-    case "write":
+    case "Write":
       writeIntoElement(fileName, givenTestCaseStepsDTO);
       break;
     case "PickOptionFromSelect":
@@ -59,6 +59,7 @@ public class StepToCode extends Constant {
       executeJS(fileName,givenTestCaseStepsDTO);
       break;
     default:
+      System.out.println("step not automated" + givenTestCaseStepsDTO);
       break;
     }
   }
@@ -168,11 +169,14 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "switchToPreviousTab();");
       break;
     case "Utilities":
-      ltLogger.info(testCaseStepsDTO);
+//      ltLogger.info(testCaseStepsDTO);
+      System.out.println("step not automated" + testCaseStepsDTO);
     case "WaitUntil":
-      ltLogger.info(testCaseStepsDTO);
+//      ltLogger.info(testCaseStepsDTO);
+      System.out.println("step not automated" + testCaseStepsDTO);
     default:
-      ltLogger.info(testCaseStepsDTO);
+//      ltLogger.info(testCaseStepsDTO);
+      System.out.println("step not automated" + testCaseStepsDTO);
       break;
     }
   }
@@ -194,6 +198,7 @@ public class StepToCode extends Constant {
         "Assert.assertTrue(isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }));");
       break;
     default:
+      System.out.println("step not automated" + testCaseStepsDTO);
       break;
     }
   }
