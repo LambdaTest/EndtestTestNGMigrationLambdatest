@@ -66,10 +66,24 @@ public class StepToCode extends Constant {
     case "SetVariable":
       setVariable(fileName, givenTestCaseStepsDTO);
       break;
+    case "StartElse":
+      startElse(fileName, givenTestCaseStepsDTO);
+      break;
+    case "EndElse":
+      endElse(fileName, givenTestCaseStepsDTO);
+      break;
     default:
       System.out.println("step not automated" + givenTestCaseStepsDTO);
       break;
     }
+  }
+
+  private void endElse(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
+    writeInFile(fileName, "}");
+  }
+
+  private void startElse(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
+    writeInFile(fileName, "}else{");
   }
 
   private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
