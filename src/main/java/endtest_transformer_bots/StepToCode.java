@@ -56,33 +56,59 @@ public class StepToCode extends Constant {
       snippingTool(fileName, givenTestCaseStepsDTO);
       break;
     case "TakeScreenshot":
-      TakeScreenshoot(fileName,givenTestCaseStepsDTO);
+      TakeScreenshoot(fileName, givenTestCaseStepsDTO);
       break;
-    case "Pause" :
-      pause(fileName,givenTestCaseStepsDTO);
+    case "Pause":
+      pause(fileName, givenTestCaseStepsDTO);
       break;
     case "ExecuteJS":
-      executeJS(fileName,givenTestCaseStepsDTO);
+      executeJS(fileName, givenTestCaseStepsDTO);
       break;
+    case "SetVariable":
+      setVariable(fileName, givenTestCaseStepsDTO);
     default:
       break;
     }
   }
 
-  private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "javascriptExecution("+testCaseStepsDTO.getParameter1()+",testDriver);");
+  private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    String temp = testCaseStepsDTO.getParameter2();
+    switch (temp) {
+    case "EnterValue":
+      setVariableEnterValue(fileName, testCaseStepsDTO.getParameter1(), testCaseStepsDTO.getParameter3());
+      break;
+    case "ExtractFromElement":
+      setVariableFromElement(fileName,testCaseStepsDTO ,testCaseStepsDTO.getParameter1());
+      break;
+    default:
+      System.out.println("This parameter 2 is not implemented " + temp);
+    }
   }
 
-  private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO){
-    writeInFile(fileName, "waitForTime("+testCaseStepsDTO.getParameter1()+");");
+  private void setVariableFromElement(String fileName, TestCaseStepsDTO testCaseStepsDTO, String variableName) {
+    String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter3());
+    writeInFile(fileName, "String"+variableName+" = getText(new String[] { " + locator[0] + ", \" " + locator[1] + " + \"  } );");
+  }
+
+  private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
+    writeInFile(fileName, "String " + variableName + "=" + variableValue + ";");
+  }
+
+  private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "javascriptExecution(" + testCaseStepsDTO.getParameter1() + ",testDriver);");
+  }
+
+  private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "waitForTime(" + testCaseStepsDTO.getParameter1() + ");");
   }
 
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
-    writeInFile(fileName, "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \""+"screenshoot.png);");
+    writeInFile(fileName,
+      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \"" + "screenshoot.png);");
   }
 
-  private void TakeScreenshoot(String fileName,TestCaseStepsDTO testCaseStepsDTO ){
+  private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
     writeInFile(fileName, "takeScreenshoot(screenshoot.png);");
   }
@@ -90,13 +116,14 @@ public class StepToCode extends Constant {
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "selectOption(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
+      "selectOption(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \"" + testCaseStepsDTO
+        .getParameter2() + "\");");
   }
 
   private void writeIntoElement(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
-    writeInFile(fileName,
-      "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
+    writeInFile(fileName, "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
+      .getParameter2() + "\");");
   }
 
   private void endIf(String fileName) {
@@ -120,7 +147,8 @@ public class StepToCode extends Constant {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
     String[] offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
     writeInFile(fileName,
-      "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+      "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
+        .toString() + "," + offSetCoordinate[1] + ");");
   }
 
   private void assertWithCondition(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -133,7 +161,8 @@ public class StepToCode extends Constant {
       break;
     case "CheckContainsValue":
       writeInFile(fileName,
-        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO.getParameter3() + "\"));");
+        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO
+          .getParameter3() + "\"));");
       break;
     case "CheckElement":
       writeInFile(fileName,
@@ -148,7 +177,8 @@ public class StepToCode extends Constant {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
     String[] offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
     writeInFile(fileName,
-      "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+      "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
+        .toString() + "," + offSetCoordinate[1] + ");");
 
   }
 
