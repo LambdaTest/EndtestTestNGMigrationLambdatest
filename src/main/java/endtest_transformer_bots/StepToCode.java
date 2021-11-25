@@ -243,6 +243,7 @@ public class StepToCode extends Constant {
       break;
     default:
       System.out.println("Test Case DTO " + testCaseStepsDTO);
+      break;
     }
   }
 
