@@ -52,10 +52,10 @@ public class StepToCode extends Constant {
       snippingTool(fileName, givenTestCaseStepsDTO);
       break;
     case "TakeScreenshot":
-      TakeScreenshoot(fileName,givenTestCaseStepsDTO);
+      TakeScreenshoot(fileName, givenTestCaseStepsDTO);
       break;
-    case "Pause" :
-      pause(fileName,givenTestCaseStepsDTO);
+    case "Pause":
+      pause(fileName, givenTestCaseStepsDTO);
       break;
     case "ExecuteJS":
       executeJS(fileName, givenTestCaseStepsDTO);
@@ -93,8 +93,8 @@ public class StepToCode extends Constant {
     case "ExtractNumberOfElements":
     case "ExtractNumberOfChildElements":
     default:
-     System.out.println("This parameter 2 is not implemented " + temp );
-      System.out.println("Test Case DTO " + testCaseStepsDTO );
+      System.out.println("This parameter 2 is not implemented " + setVariableType);
+      System.out.println("Test Case DTO " + testCaseStepsDTO);
     }
   }
 
@@ -119,24 +119,26 @@ public class StepToCode extends Constant {
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },/logs/ss/"+getRandomString(6)+".png);");
+      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },/logs/ss/" + getRandomString(
+        6) + ".png);");
   }
 
   private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
-    writeInFile(fileName, "takeScreenshoot(/logs/ss/"+getRandomString(6)+".png);");
+    writeInFile(fileName, "takeScreenshoot(/logs/ss/" + getRandomString(6) + ".png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
+      "selectOption(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
+        .getParameter2() + "\");");
   }
 
   private void writeIntoElement(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
-    writeInFile(fileName,
-      "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO.getParameter2() + "\");");
+    writeInFile(fileName, "typeText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, \"" + testCaseStepsDTO
+      .getParameter2() + "\");");
   }
 
   private void endIf(String fileName) {
@@ -203,24 +205,26 @@ public class StepToCode extends Constant {
     case "MoveAndClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndClickWithOffset(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
+          .toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "DoubleClickWithOffset":
       offSetCoordinate = testCaseStepsDTO.getParameter3().split(",");
       writeInFile(fileName,
-        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0].toString() + "," + offSetCoordinate[1] + ");");
+        "moveAndDoubleClickWithOffset(new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + offSetCoordinate[0]
+          .toString() + "," + offSetCoordinate[1] + ");");
       break;
     case "SwitchToPreviousTab":
       writeInFile(fileName, "switchToPreviousTab();");
       break;
     case "Utilities":
-//      ltLogger.info(testCaseStepsDTO);
+      //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
     case "WaitUntil":
-//      ltLogger.info(testCaseStepsDTO);
+      //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
     default:
-//      ltLogger.info(testCaseStepsDTO);
+      //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
       break;
     }
@@ -236,7 +240,8 @@ public class StepToCode extends Constant {
       break;
     case "CheckContainsValue":
       writeInFile(fileName,
-        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO.getParameter3() + "\"));");
+        "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO
+          .getParameter3() + "\"));");
       break;
     case "CheckElement":
       writeInFile(fileName,
@@ -291,6 +296,7 @@ public class StepToCode extends Constant {
       System.out.println(status);
     }
   }
+
   public String getRandomString(int size) {
     byte[] bytArray = new byte[256];
     new Random().nextBytes(bytArray);
