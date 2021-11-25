@@ -289,7 +289,7 @@ public class StepToCode extends Constant {
     String[] locator = locatorTransform(map.get("locatorType"), map.get("locator"));
     String waitCondition = map.get("waitCondition");
 
-    writeInFile(fileName,"waitUntil(" + waitCondition + "new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
+    writeInFile(fileName,"waitUntil(" + waitCondition + ", new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
       "maxTime") + "," + map.get("theRefresh") + ");");
   }
 
