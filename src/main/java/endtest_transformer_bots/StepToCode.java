@@ -107,7 +107,7 @@ public class StepToCode extends Constant {
   }
 
   private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
-    writeInFile(fileName, "String " + variableName + "=" + variableValue + ";");
+    writeInFile(fileName, "String " + variableName + "= \" " + variableValue + "\";");
   }
 
   private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
