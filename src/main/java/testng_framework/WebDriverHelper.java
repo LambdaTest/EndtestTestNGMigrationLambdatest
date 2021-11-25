@@ -64,7 +64,7 @@ public class WebDriverHelper extends Base {
     String using = locator[0].toLowerCase();
     String locatorValue = locator[1];
     WebElement ele = null;
-    if (using.contentEquals("id")) {
+    if (using.contentEquals(ID)) {
       ele = driver.findElementById(locatorValue);
     } else if (using.contentEquals(CLASS)) {
       ele = driver.findElementByClassName(locatorValue);
@@ -80,7 +80,8 @@ public class WebDriverHelper extends Base {
       ele = driver.findElementByLinkText(locatorValue);
     } else if (using.contentEquals(PARTIAL_LINK)) {
       ele = driver.findElementByPartialLinkText(locatorValue);
-    }
+    } else if (using.contentEquals(TEXT_INSIDE))
+      ele = driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]");
     ltLogger.info("element '{}' found", ele);
     return ele;
   }
@@ -598,27 +599,6 @@ public class WebDriverHelper extends Base {
 
   public boolean isElementDisplayed(String[] locator) {
     ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
-    String using = locator[0].toLowerCase();
-    String locatorValue = locator[1];
-    switch (using) {
-    case "id":
-      return driver.findElementById(locatorValue).isDisplayed();
-    case "class":
-      return driver.findElementByClassName(locatorValue).isDisplayed();
-    case "name":
-      return driver.findElementByName(locatorValue).isDisplayed();
-    case "xpath":
-      return driver.findElementByXPath(locatorValue).isDisplayed();
-    case "css":
-      return driver.findElementByCssSelector(locatorValue).isDisplayed();
-    case "Text Inside":
-      return driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]").isDisplayed();
-    case "Link Text":
-      return driver.findElementByLinkText(locatorValue).isDisplayed();
-    case "Partial Link Text":
-      return driver.findElementByPartialLinkText(locatorValue).isDisplayed();
-    default:
-      throw new IllegalStateException("Unexpected value: " + using);
-    }
+    return getElement(locator).isDisplayed();
   }
 }

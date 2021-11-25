@@ -13,6 +13,7 @@ public class Constant {
   protected static final String TAG_NAME = "tagname";
   protected static final String LINK = "link";
   protected static final String PARTIAL_LINK = "partial_link";
+  protected static final String TEXT_INSIDE = "Text Inside";
   protected static final String SUITE_XML_PATH = System.getProperty("user.dir")
     .split("EndtestTestNGMigrationLambdatest")[0] + "EndtestTestNGMigrationLambdatest" + "/" + "src/main/resources/";
   protected static final String DYNAMIC_XML_BODY = "<!DOCTYPE suite SYSTEM \"http://testng.org/testng-1.0.dtd\">\n" + "\n" + "<suite thread-count=\"1\" verbose=\"1\" name=\"Lambdatest Suite\"\n" + "\tannotations=\"JDK\" parallel=\"tests\">\n" + "\n" + "\t<test name=\"Test1\">\n" + "\t\t<parameter name=\"browser\" value=\"Chrome\" />\n" + "\t\t<parameter name=\"version\" value=\"latest-1\" />\n" + "\t\t<parameter name=\"platform\" value=\"win10\" />\n" + "\t\t<classes>\n" + "\t\t\t<class name=\"generated_tests.<addSuiteName>\" />\n" + "\t\t</classes>\n" + "\t</test>\n" + "\n" + "</suite>";
