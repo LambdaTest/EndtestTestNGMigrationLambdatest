@@ -53,8 +53,7 @@ public class EndTestTransformer {
 
   public void createSeleniumStepForTestID(String filename, String testID) {
     ApiHelper apiHelper = new ApiHelper();
-    List<TestCaseStepsDTO> listOfTestCaseSteps = new ArrayList<>();
-    listOfTestCaseSteps = apiHelper.convertJsonToObject(
+    List<TestCaseStepsDTO> listOfTestCaseSteps = apiHelper.convertJsonToObject(
       apiHelper.getReqAsString("http://localhost:9990/endTest/getResultBasedOnFieldValue/test_case_id?value=" + testID),
       new TypeToken<List<TestCaseStepsDTO>>() {
       }.getType());
