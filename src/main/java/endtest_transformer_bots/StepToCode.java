@@ -9,6 +9,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class StepToCode extends Constant {
 
@@ -122,12 +124,12 @@ public class StepToCode extends Constant {
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },screenshoot.png);");
+      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },/logs/ss/"+getRandomString(6)+".png);");
   }
 
   private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
-    writeInFile(fileName, "takeScreenshoot(screenshoot.png);");
+    writeInFile(fileName, "takeScreenshoot(/logs/ss/"+getRandomString(6)+".png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -241,5 +243,22 @@ public class StepToCode extends Constant {
       e.printStackTrace();
       System.out.println(status);
     }
+  }
+  public String getRandomString(int size) {
+    byte[] bytArray = new byte[256];
+    new Random().nextBytes(bytArray);
+
+    String randomStr = new String(bytArray, StandardCharsets.UTF_8);
+    StringBuilder strBuilder = new StringBuilder();
+    // remove all special char
+    String alphaStr = randomStr.replaceAll("[^A-Za-z]", "");
+
+    for (int i = 0; i < alphaStr.length(); i++) {
+      if (size > 0 && (Character.isLetter(alphaStr.charAt(i)) || Character.isDigit(alphaStr.charAt(i)))) {
+        strBuilder.append(alphaStr.charAt(i));
+      }
+      size--;
+    }
+    return strBuilder.toString();
   }
 }
