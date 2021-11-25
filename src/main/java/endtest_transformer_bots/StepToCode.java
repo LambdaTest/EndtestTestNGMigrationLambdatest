@@ -66,6 +66,7 @@ public class StepToCode extends Constant {
       break;
     case "SetVariable":
       setVariable(fileName, givenTestCaseStepsDTO);
+      break;
     default:
       break;
     }
@@ -78,16 +79,31 @@ public class StepToCode extends Constant {
       setVariableEnterValue(fileName, testCaseStepsDTO.getParameter1(), testCaseStepsDTO.getParameter3());
       break;
     case "ExtractFromElement":
-      setVariableFromElement(fileName,testCaseStepsDTO ,testCaseStepsDTO.getParameter1());
+      setVariableFromElement(fileName, testCaseStepsDTO, testCaseStepsDTO.getParameter1());
       break;
+    case "EnterPassword":
+    case "GenerateRandomNumber":
+    case "GenerateRandomString":
+    case "GenerateRandomEmail":
+    case "Timestamp":
+    case "ExtractFromElementOCR":
+    case "ExtractAttributeFromElement":
+    case "ExtractFromJS":
+    case "ExtractSelectorFromElement":
+    case "ExtractResultFromQuery":
+    case "ExtractUrl":
+    case "ExtractTitle":
+    case "ExtractNumberOfElements":
+    case "ExtractNumberOfChildElements":
     default:
-      System.out.println("This parameter 2 is not implemented " + temp);
+     System.out.println("This parameter 2 is not implemented " + temp);
     }
   }
 
   private void setVariableFromElement(String fileName, TestCaseStepsDTO testCaseStepsDTO, String variableName) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter3());
-    writeInFile(fileName, "String"+variableName+" = getText(new String[] { " + locator[0] + ", \" " + locator[1] + " + \"  } );");
+    writeInFile(fileName,
+      "String" + variableName + " = getText(new String[] { " + locator[0] + ", \" " + locator[1] + " \"  } );");
   }
 
   private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
