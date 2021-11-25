@@ -16,7 +16,7 @@ public class SingleTest extends WebDriverHelper {
       // Click on Second Item
       clickOnElement(new String[] {NAME, "li2"});
       // Add new item is list
-      cleartext(new String[] {NAME, "sampletodotext"});
+      clearText(new String[] {NAME, "sampletodotext"});
       typeText(new String[] {ID, "sampletodotext"}, "Yey, Let's add it to list");
       clickOnElement(new String[] {ID, "addbutton"});
 

@@ -2,13 +2,12 @@ package testng_framework;
 
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
+import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
 
 import java.io.File;
@@ -63,7 +62,7 @@ public class WebDriverHelper extends Base {
     String using = locator[0].toLowerCase();
     String locatorValue = locator[1];
     WebElement ele = null;
-    if (using.contentEquals("id")) {
+    if (using.contentEquals(ID)) {
       ele = driver.findElementById(locatorValue);
     } else if (using.contentEquals(CLASS)) {
       ele = driver.findElementByClassName(locatorValue);
@@ -79,7 +78,8 @@ public class WebDriverHelper extends Base {
       ele = driver.findElementByLinkText(locatorValue);
     } else if (using.contentEquals(PARTIAL_LINK)) {
       ele = driver.findElementByPartialLinkText(locatorValue);
-    }
+    } else if (using.contentEquals(TEXT_INSIDE))
+      ele = driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]");
     ltLogger.info("element '{}' found", ele);
     return ele;
   }
@@ -121,13 +121,13 @@ public class WebDriverHelper extends Base {
     typeText(ele, text);
   }
 
-  public void cleartext(String[] locator) {
+  public void clearText(String[] locator) {
     WebElement ele = getElement(locator);
-    cleartext(ele);
+    clearText(ele);
     ltLogger.info("clear text '{}' successful", ele);
   }
 
-  public void cleartext(WebElement ele) {
+  public void clearText(WebElement ele) {
     ele.clear();
   }
 
@@ -188,23 +188,32 @@ public class WebDriverHelper extends Base {
     String using = locator[0].toLowerCase();
     String locatorValue = locator[1];
 
-    if (using.contentEquals("id")) {
+    if (using.contentEquals(ID)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementById(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementById(locatorValue)));
-    } else if (using.contentEquals("class")) {
+    } else if (using.contentEquals(CLASS)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByClassName(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByClassName(locatorValue)));
-    } else if (using.contentEquals("name")) {
+    } else if (using.contentEquals(NAME)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByName(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByName(locatorValue)));
-    } else if (using.contentEquals("xpath")) {
+    } else if (using.contentEquals(XPATH)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByXPath(locatorValue)));
-    } else if (using.contentEquals("css")) {
+    } else if (using.contentEquals(CSS)) {
       wait.until(ExpectedConditions.visibilityOf(driver.findElementByCssSelector(locatorValue)));
       wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByCssSelector(locatorValue)));
+    } else if (using.contentEquals(TEXT_INSIDE)) {
+      wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]")));
+      wait.until(
+        ExpectedConditions.elementToBeClickable(driver.findElementByXPath("//*[ text() = ‘" + locatorValue + "’]")));
+    } else if (using.contentEquals(LINK_TEXT)) {
+      wait.until(ExpectedConditions.visibilityOf(driver.findElementByLinkText(locatorValue)));
+      wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByLinkText(locatorValue)));
+    } else if (using.contentEquals(PARTIAL_LINK)) {
+      wait.until(ExpectedConditions.visibilityOf(driver.findElementByPartialLinkText(locatorValue)));
+      wait.until(ExpectedConditions.elementToBeClickable(driver.findElementByPartialLinkText(locatorValue)));
     }
-
   }
 
   public long waitForElementToDisappear(String[] locator, int timeout) {
@@ -246,9 +255,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger
-        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
-          locator, methodName);
+      ltLogger.info(
+        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
+        methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -491,6 +500,27 @@ public class WebDriverHelper extends Base {
     actions.doubleClick(ele).perform();
   }
 
+  public void closeAlert() {
+    driver.switchTo().alert().dismiss();
+  }
+
+  public void closeTab() {
+    driver.close();
+  }
+
+  public void goBack() {
+    driver.navigate().back();
+  }
+
+  public void goForward() {
+    driver.navigate().forward();
+  }
+
+  public void switchToIFrame(String[] locator) {
+    WebElement frameElement = getElement(locator);
+    driver.switchTo().frame(frameElement);
+  }
+
   public void openNewTab(String url) {
     driver.executeScript("window.open('" + url + "');");
   }
@@ -509,6 +539,17 @@ public class WebDriverHelper extends Base {
   public void moveAndClickWithOffset(String[] locator, int x_Coordinate, int y_Coordinate) {
     WebElement ele = getElement(locator);
     actions.moveToElement(ele).moveByOffset(x_Coordinate, y_Coordinate).click().perform();
+  }
+
+  public void clearInput(String[] locator) {
+    WebElement ele = getElement(locator);
+    ele.click();
+    ele.clear();
+  }
+
+  public void rightClick(String[] locator) {
+    WebElement ele = getElement(locator);
+    actions.contextClick(ele).perform();
   }
 
   public void moveAndDoubleClickWithOffset(String[] locator, int x_Coordinate, int y_Coordinate) {
@@ -543,6 +584,12 @@ public class WebDriverHelper extends Base {
     }
   }
 
+  public void switchToPreviousTab() {
+    Set<String> st = driver.getWindowHandles();
+    Iterator<String> it = st.iterator();
+    driver.switchTo().window(it.next());
+  }
+
   public void selectOption(String[] locator, String valueToSelect) {
     WebElement ele = getElement(locator);
     Select select = new Select(ele);
@@ -560,6 +607,38 @@ public class WebDriverHelper extends Base {
     return isAvailable;
   }
 
+  public void assertion(String assertionType, String[] locator) {
+    switch (assertionType) {
+    case "CheckClickableElement":
+      Assert.assertTrue(isElementClickable(locator));
+      break;
+    case "CheckClickableNotElement":
+      Assert.assertFalse(isElementClickable(locator));
+      break;
+    case "CheckElement":
+      Assert.assertTrue(isElementDisplayed(locator));
+      break;
+    case "CheckElementScreenshot":
+    case "CheckContainsValue":
+    case "CheckNotContainsValue":
+    case "CheckNotElement":
+    case "CheckPageScreenshot":
+    case "CheckUrlContains":
+    case "CheckVisibleElement":
+    case "CheckVisibleNotElement":
+    case "CountChildElements":
+    case "VariableAssertion":
+    default:
+//      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
+      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
+    }
+  }
+
+  public boolean isElementDisplayed(String[] locator) {
+    ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
+    return getElement(locator).isDisplayed();
+  }
+
   //pathToFile should contain path + FileName.png
   public void takeScreenshoot(String pathToFile) {
     try {
@@ -574,6 +653,7 @@ public class WebDriverHelper extends Base {
       ltLogger.error("Not able to capture and transfer file");
     }
   }
+
   //pathToFile should contain path + FileName.png
   public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
     WebElement webElement = getElement(locator);
