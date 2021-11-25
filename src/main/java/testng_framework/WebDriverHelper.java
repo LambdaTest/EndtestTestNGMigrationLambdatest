@@ -2,12 +2,14 @@ package testng_framework;
 
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -242,9 +244,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger.info(
-        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
-        methodName);
+      ltLogger
+        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
+          locator, methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -593,4 +595,31 @@ public class WebDriverHelper extends Base {
     }
     return isAvailable;
   }
+
+  //pathToFile should contain path + FileName.png
+  public void takeScreenshoot(String pathToFile) {
+    try {
+      TakesScreenshot scrShot = ((TakesScreenshot) driver);
+      File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
+      //Move image file to new destination
+      ltLogger.info("Screenshoot taken");
+      File destinationFile = new File(pathToFile);
+      //Copy file at destination
+      FileUtils.copyFile(srcFile, destinationFile);
+    } catch (Exception e) {
+      ltLogger.error("Not able to capture and transfer file");
+    }
+  }
+  //pathToFile should contain path + FileName.png
+  public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
+    WebElement webElement = getElement(locator);
+    try {
+      File destinationFile = new File(pathToFile);
+      File f = webElement.getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(f, new File("screenshots.png"));
+    } catch (Exception e) {
+      ltLogger.error("Not able to capture and transfer file for Element");
+    }
+  }
+
 }

@@ -46,9 +46,39 @@ public class StepToCode extends Constant {
     case "PickOptionFromSelect":
       pickOptionFromSelect(fileName, givenTestCaseStepsDTO);
       break;
+    case "SnippingTool":
+      snippingTool(fileName, givenTestCaseStepsDTO);
+      break;
+    case "TakeScreenshot":
+      TakeScreenshoot(fileName,givenTestCaseStepsDTO);
+      break;
+    case "Pause" :
+      pause(fileName,givenTestCaseStepsDTO);
+      break;
+    case "ExecuteJS":
+      executeJS(fileName,givenTestCaseStepsDTO);
+      break;
     default:
       break;
     }
+  }
+
+  private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "javascriptExecution("+testCaseStepsDTO.getParameter1()+",testDriver);");
+  }
+
+  private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO){
+    writeInFile(fileName, "waitForTime("+testCaseStepsDTO.getParameter1()+");");
+  }
+
+  private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
+    writeInFile(fileName, "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \" + locator[1] + \" }, \""+"screenshoot.png);");
+  }
+
+  private void TakeScreenshoot(String fileName,TestCaseStepsDTO testCaseStepsDTO ){
+    //do we have to make filepath and file name different for image
+    writeInFile(fileName, "takeScreenshoot(screenshoot.png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
