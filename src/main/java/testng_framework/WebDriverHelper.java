@@ -2,6 +2,7 @@ package testng_framework;
 
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
+import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
@@ -653,7 +654,7 @@ public class WebDriverHelper extends Base {
       break;
     case "VariableAssertion":
     default:
-      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
+//      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
       System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
     }
     EnvSetup.SOFT_ASSERT.set(softAssert);
@@ -725,6 +726,7 @@ public class WebDriverHelper extends Base {
       ltLogger.error("Not able to capture and transfer file");
     }
   }
+
   //pathToFile should contain path + FileName.png
   public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
     WebElement webElement = getElement(locator);
@@ -737,4 +739,7 @@ public class WebDriverHelper extends Base {
     }
   }
 
+  public int getTextLength(String str) {
+    return str.length();
+  }
 }
