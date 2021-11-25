@@ -680,19 +680,16 @@ public class WebDriverHelper extends Base {
   }
 
   public void waitUntilElementPresent(String[] locator, String maxTime, String theRefresh) {
-    Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime)))
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime)))
       .pollingEvery(refreshValue(theRefresh)).ignoring(NoSuchElementException.class);
 
-    wait.until(driver -> {
-      boolean isAvailable;
+    wait.until(driver1 -> {
       try {
-        getElement(locator, 0);
-        isAvailable = true;
+        return getElement(locator, 0);
       } catch (Exception e) {
         pageRefresh();
-        isAvailable = false;
       }
-      return isAvailable;
+      return null;
     });
   }
 
