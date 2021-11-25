@@ -666,4 +666,7 @@ public class WebDriverHelper extends Base {
     }
   }
 
+  public int getTextLength(String str) {
+    return str.length();
+  }
 }

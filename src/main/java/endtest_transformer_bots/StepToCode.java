@@ -1,5 +1,7 @@
 package endtest_transformer_bots;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.logging.log4j.LogManager;
 import org.testng.Assert;
@@ -12,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Random;
 
 public class StepToCode extends Constant {
@@ -64,11 +67,24 @@ public class StepToCode extends Constant {
       break;
     case "ImportCase":
       new EndTestTransformer().createSeleniumStepForTestID(fileName,givenTestCaseStepsDTO.getParameter1());
+    case "StartElse":
+      startElse(fileName, givenTestCaseStepsDTO);
+      break;
+    case "EndElse":
+      endElse(fileName, givenTestCaseStepsDTO);
       break;
     default:
       System.out.println("step not automated" + givenTestCaseStepsDTO);
       break;
     }
+  }
+
+  private void endElse(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
+    writeInFile(fileName, "}");
+  }
+
+  private void startElse(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
+    writeInFile(fileName, "}else{");
   }
 
   private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -217,14 +233,28 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "switchToPreviousTab();");
       break;
     case "Utilities":
-      //      ltLogger.info(testCaseStepsDTO);
-      System.out.println("step not automated" + testCaseStepsDTO);
+      utilities(fileName, testCaseStepsDTO);
+      break;
     case "WaitUntil":
       //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
     default:
       //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
+      break;
+    }
+  }
+
+  private void utilities(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    HashMap<String, String> map = storeParamValuesInHashmap(testCaseStepsDTO.getParameter2());
+    String method = map.get("method");
+    switch (method) {
+    case "GetTextLength":
+      writeInFile(fileName,
+        "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
+      break;
+    default:
+      System.out.println("Test Case DTO " + testCaseStepsDTO);
       break;
     }
   }
@@ -311,5 +341,11 @@ public class StepToCode extends Constant {
       size--;
     }
     return strBuilder.toString();
+  }
+
+  public HashMap storeParamValuesInHashmap(String parameter) {
+    String str = parameter.replace("\\\\", "").replace("\\", "");
+    return new Gson().fromJson(str, new TypeToken<HashMap<String, String>>() {
+    }.getType());
   }
 }
