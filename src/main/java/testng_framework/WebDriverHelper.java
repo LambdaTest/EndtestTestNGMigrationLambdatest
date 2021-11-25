@@ -653,7 +653,8 @@ public class WebDriverHelper extends Base {
       break;
     case "VariableAssertion":
     default:
-      ltLogger.info(assertionType);
+      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
+      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
     }
     EnvSetup.SOFT_ASSERT.set(softAssert);
   }
