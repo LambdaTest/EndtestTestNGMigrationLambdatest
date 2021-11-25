@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
@@ -676,5 +677,35 @@ public class WebDriverHelper extends Base {
 
   public void deleteSpecificCookie(String cookieName) {
     driver.manage().deleteCookieNamed(cookieName);
+  }
+
+  public void waitUntilElementPresent(String[] locator, String maxTime, String theRefresh) {
+    Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime)))
+      .pollingEvery(refreshValue(theRefresh)).ignoring(NoSuchElementException.class);
+
+    wait.until(driver -> {
+      boolean isAvailable;
+      try {
+        getElement(locator, 0);
+        isAvailable = true;
+      } catch (Exception e) {
+        pageRefresh();
+        isAvailable = false;
+      }
+      return isAvailable;
+    });
+  }
+
+  private Duration refreshValue(String theRefresh) {
+    switch (theRefresh) {
+    case "ten":
+      return Duration.ofSeconds(10);
+    case "thirty":
+      return Duration.ofSeconds(30);
+    case "sixty":
+      return Duration.ofSeconds(60);
+    default:
+      return Duration.ofSeconds(0);
+    }
   }
 }
