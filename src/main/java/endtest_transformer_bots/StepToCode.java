@@ -112,7 +112,7 @@ public class StepToCode extends Constant {
   }
 
   private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "javascriptExecution(" + testCaseStepsDTO.getParameter1() + ",testDriver);");
+    writeInFile(fileName, "javascriptExecution(" + testCaseStepsDTO.getParameter1() + ",driver);");
   }
 
   private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
