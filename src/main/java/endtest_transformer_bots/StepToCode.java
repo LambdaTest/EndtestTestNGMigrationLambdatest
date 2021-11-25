@@ -70,8 +70,8 @@ public class StepToCode extends Constant {
   }
 
   private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    String temp = testCaseStepsDTO.getParameter2();
-    switch (temp) {
+    String setVariableType = testCaseStepsDTO.getParameter2();
+    switch (setVariableType) {
     case "EnterValue":
       setVariableEnterValue(fileName, testCaseStepsDTO.getParameter1(), testCaseStepsDTO.getParameter3());
       break;
