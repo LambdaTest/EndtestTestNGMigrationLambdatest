@@ -669,4 +669,12 @@ public class WebDriverHelper extends Base {
   public int getTextLength(String str) {
     return str.length();
   }
+
+  public void deleteAllCookies() {
+    driver.manage().deleteAllCookies();
+  }
+
+  public void deleteSpecificCookie(String cookieName) {
+    driver.manage().deleteCookieNamed(cookieName);
+  }
 }
