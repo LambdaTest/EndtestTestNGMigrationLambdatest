@@ -626,7 +626,8 @@ public class WebDriverHelper extends Base {
     case "CountChildElements":
     case "VariableAssertion":
     default:
-      throw new IllegalStateException("Unexpected value: " + assertionType);
+      ltLogger.info(testCaseStepsDTO);
+
     }
   }
 
