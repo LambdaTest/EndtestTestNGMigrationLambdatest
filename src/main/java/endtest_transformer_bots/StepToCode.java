@@ -143,7 +143,7 @@ public class StepToCode extends Constant {
 
   private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
-    writeInFile(fileName, "takeScreenshoot(/logs/ss/" + getRandomString(6) + ".png);");
+    writeInFile(fileName, "takeScreenshoot(/logs/Screenshoot/" + getRandomString(6) + ".png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -259,7 +259,7 @@ public class StepToCode extends Constant {
 
   private void generateFullPageScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     writeInFile(fileName,
-      "takeScreenshootOfEntirePage(/logs/ss/"+getRandomString(6)+".png);");
+      "takeScreenshootOfEntirePage(/logs/Screenshoot/"+getRandomString(6)+".png);");
 
   }
 
