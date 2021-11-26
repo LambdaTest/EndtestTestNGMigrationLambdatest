@@ -3,7 +3,6 @@ package testng_framework;
 import endtest_transformer_bots.StepToCode;
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
-import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
@@ -25,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
-  StepToCode stepToCode = new StepToCode();
 
   public WebDriverHelper() {
     super();
