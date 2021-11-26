@@ -8,6 +8,9 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 import org.testng.asserts.SoftAssert;
 
 import javax.imageio.ImageIO;
@@ -268,9 +271,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger.info(
-        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
-        methodName);
+      ltLogger
+        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
+          locator, methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -684,6 +687,10 @@ public class WebDriverHelper extends Base {
   //pathToFile should contain path + FileName.png
   public void takeScreenshoot(String pathToFile) {
     try {
+      File theDir = new File("logs/Screenshoots");
+      if (!theDir.exists()) {
+        theDir.mkdirs();
+      }
       TakesScreenshot scrShot = ((TakesScreenshot) driver);
       File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
       //Move image file to new destination
@@ -698,11 +705,15 @@ public class WebDriverHelper extends Base {
 
   //pathToFile should contain path + FileName.png
   public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
+    File theDir = new File("logs/Screenshoots");
+    if (!theDir.exists()) {
+      theDir.mkdirs();
+    }
     WebElement webElement = getElement(locator);
     try {
       File destinationFile = new File(pathToFile);
       File f = webElement.getScreenshotAs(OutputType.FILE);
-      FileUtils.copyFile(f, new File("screenshots.png"));
+      FileUtils.copyFile(f, new File(pathToFile));
     } catch (Exception e) {
       ltLogger.error("Not able to capture and transfer file for Element");
     }
@@ -721,8 +732,9 @@ public class WebDriverHelper extends Base {
   }
 
   public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
-    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime)))
-      .pollingEvery(refreshValue(theRefresh)).ignoring(NoSuchElementException.class);
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
+      .ignoring(NoSuchElementException.class);
 
     switch (waitCondition) {
     case "CheckElement":
@@ -736,14 +748,14 @@ public class WebDriverHelper extends Base {
       });
       break;
     case "CheckClickableElement":
-    wait.until(driver1 -> {
-      try {
-        return isDisplayed(locator, 0) && isEnabled(locator, 0);
-      } catch (Exception e) {
-        pageRefresh();
-      }
-      return null;
-    });
+      wait.until(driver1 -> {
+        try {
+          return isDisplayed(locator, 0) && isEnabled(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
       break;
     case "CheckEnabledElement":
       wait.until(driver1 -> {
@@ -815,6 +827,22 @@ public class WebDriverHelper extends Base {
       javascriptExecution("console.error('" + message + " via error command" + "')", driver);
       System.out.println(message);
       break;
+    }
+  }
+
+  public void takeScreenshootOfEntirePage(String fileName) {
+    File theDir = new File("logs/Screenshoots");
+    if (!theDir.exists()) {
+      theDir.mkdirs();
+    }
+    Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000))
+      .takeScreenshot(driver);
+    try {
+      ImageIO.write(screenshot.getImage(), "PNG", new File(fileName));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      ltLogger.error("Not able to capture and transfer file for Element");
+      e.printStackTrace();
     }
   }
 }
