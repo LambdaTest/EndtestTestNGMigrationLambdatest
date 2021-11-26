@@ -309,7 +309,6 @@ public class StepToCode extends Constant {
   private void assertWithCondition(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
     String assertionType = testCaseStepsDTO.getParameter1();
-
     switch (assertionType) {
     case "CheckClickableElement":
       writeInFile(fileName,
