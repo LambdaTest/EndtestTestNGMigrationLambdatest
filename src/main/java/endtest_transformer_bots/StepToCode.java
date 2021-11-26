@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.logging.log4j.LogManager;
-import org.testng.Assert;
 import testng_framework.Constant;
 import org.apache.commons.io.FileUtils;
 import testng_framework.WebDriverHelper;
@@ -89,7 +88,7 @@ public class StepToCode extends Constant {
     writeInFile(fileName, "}else{");
   }
 
-  private void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+  public void setVariable(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String setVariableType = testCaseStepsDTO.getParameter2();
     switch (setVariableType) {
     case "EnterValue":
@@ -139,13 +138,13 @@ public class StepToCode extends Constant {
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },/logs/ss/" + getRandomString(
+      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },logs/Screenshoots/" + getRandomString(
         6) + ".png);");
   }
 
   private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
-    writeInFile(fileName, "takeScreenshoot(/logs/ss/" + getRandomString(6) + ".png);");
+    writeInFile(fileName, "takeScreenshoot(logs/Screenshoots/" + getRandomString(6) + ".png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -238,8 +237,7 @@ public class StepToCode extends Constant {
       utilities(fileName, testCaseStepsDTO);
       break;
     case "WaitUntil":
-      //      ltLogger.info(testCaseStepsDTO);
-      System.out.println("step not automated" + testCaseStepsDTO);
+      waitUntil(fileName, testCaseStepsDTO);
       break;
     case "DeleteCookies":
       deleteCookies(fileName, testCaseStepsDTO);
@@ -250,6 +248,9 @@ public class StepToCode extends Constant {
     case "ClearSessionStorage":
       clearSessionStorage(fileName, testCaseStepsDTO);
       break;
+    case "GenerateFullPageScreenshot":
+      generateFullPageScreenshoot(fileName, testCaseStepsDTO);
+      break;
     default:
       //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
@@ -257,13 +258,18 @@ public class StepToCode extends Constant {
     }
   }
 
+  private void generateFullPageScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName,
+      "takeScreenshootOfEntirePage(logs/Screenshoots/"+getRandomString(6)+".png);");
+
+  }
+
   private void utilities(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     HashMap<String, String> map = storeParamValuesInHashmap(testCaseStepsDTO.getParameter2());
     String method = map.get("method");
     switch (method) {
     case "GetTextLength":
-      writeInFile(fileName,
-        "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
+      writeInFile(fileName, "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
       break;
     default:
       System.out.println("Test Case DTO " + testCaseStepsDTO);
@@ -287,6 +293,16 @@ public class StepToCode extends Constant {
     }
   }
 
+  private void waitUntil(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    HashMap<String, String> map = storeParamValuesInHashmap(testCaseStepsDTO.getParameter2());
+    String[] locator = locatorTransform(map.get("locatorType"), map.get("locator"));
+    String waitCondition = map.get("waitCondition");
+
+    writeInFile(fileName,
+      "waitUntil(" + waitCondition + ", new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
+        "maxTime") + "," + map.get("theRefresh") + ");");
+  }
+
   public void clearLocalStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     writeInFile(fileName, "javascriptExecution(String.format(\"window.localStorage.clear();\"));");
   }
@@ -297,19 +313,61 @@ public class StepToCode extends Constant {
 
   private void assertWithCondition(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
-    String switchCondition = testCaseStepsDTO.getParameter1();
-    switch (switchCondition) {
+    fileName = TEST_PATH + fileName;
+    String assertionType = testCaseStepsDTO.getParameter1();
+
+    switch (assertionType) {
+    case "CheckClickableElement":
+      writeInFile(fileName,
+        "Assert.assertTrue(isElementClickable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      break;
+    case "CheckClickableNotElement":
+      writeInFile(fileName,
+        "Assert.assertFalse(isElementClickable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      break;
+    case "CheckElement":
+      writeInFile(fileName,
+        "Assert.assertTrue(isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      break;
+    case "CheckNotElement":
+      writeInFile(fileName,
+        "Assert.assertFalse(isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      break;
     case "CheckVisibleElement":
       writeInFile(fileName,
-        "Assert.assertTrue(isDisplayed(new String[] {" + locator[0] + ", \"" + locator[1] + "\"}));");
+        "Assert.assertTrue(isElementDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      break;
+    case "CheckVisibleNotElement":
+      writeInFile(fileName,
+        "Assert.assertFalse(isElementDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
       break;
     case "CheckContainsValue":
       writeInFile(fileName,
         "Assert.assertTrue(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO.getParameter3() + "\"));");
       break;
-    case "CheckElement":
+    case "CheckNotContainsValue":
       writeInFile(fileName,
-        "Assert.assertTrue(isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }));");
+        "Assert.assertFalse(getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).contains(\"" + testCaseStepsDTO.getParameter3() + "\"));");
+      break;
+    case "CheckUrlContains":
+      writeInFile(fileName,
+        "Assert.assertTrue(checkUrlContains(" + testCaseStepsDTO.getParameter1() + ", \"" + testCaseStepsDTO.getParameter2() + "\");");
+      break;
+    case "CountChildElements":
+      writeInFile(fileName,
+        "Assert.assertEquals(getChildElements(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }.size(), \"" + testCaseStepsDTO.getParameter3() + "\");");
+      break;
+    case "CheckElementScreenshot":
+      writeInFile(fileName,
+        "getURL(" + testCaseStepsDTO.getParameter3() + "\");\n" + "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
+      break;
+    case "CheckPageScreenshot":
+      writeInFile(fileName,
+        "getURL(" + testCaseStepsDTO.getParameter2() + "\");\n" + "takeScreenshoot(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
+      break;
+    case "VariableAssertion":
+      writeInFile(fileName,
+        "Assert.assertEquals(checkVariableAssertion(" + testCaseStepsDTO.getLocator() + ", \"" + testCaseStepsDTO.getParameter3() + ", \"" + testCaseStepsDTO.getParameter3() + "\");");
       break;
     default:
       System.out.println("step not automated" + testCaseStepsDTO);

@@ -2,20 +2,28 @@ package testng_framework;
 
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
-import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
+import org.testng.asserts.SoftAssert;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
@@ -250,14 +258,22 @@ public class WebDriverHelper extends Base {
     waitForElement(locator, 30);
   }
 
+  public boolean isEnabled(String[] locator, int waitTime) {
+    try {
+      return getElement(locator, waitTime).isEnabled();
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   public boolean isDisplayed(String[] locator) {
     String methodName = new Object() {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger.info(
-        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
-        methodName);
+      ltLogger
+        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
+          locator, methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -607,41 +623,74 @@ public class WebDriverHelper extends Base {
     return isAvailable;
   }
 
-  public void assertion(String assertionType, String[] locator) {
-    switch (assertionType) {
-    case "CheckClickableElement":
-      Assert.assertTrue(isElementClickable(locator));
-      break;
-    case "CheckClickableNotElement":
-      Assert.assertFalse(isElementClickable(locator));
-      break;
-    case "CheckElement":
-      Assert.assertTrue(isElementDisplayed(locator));
-      break;
-    case "CheckElementScreenshot":
-    case "CheckContainsValue":
-    case "CheckNotContainsValue":
-    case "CheckNotElement":
-    case "CheckPageScreenshot":
-    case "CheckUrlContains":
-    case "CheckVisibleElement":
-    case "CheckVisibleNotElement":
-    case "CountChildElements":
-    case "VariableAssertion":
-    default:
-//      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
-      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
-    }
-  }
-
   public boolean isElementDisplayed(String[] locator) {
     ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
     return getElement(locator).isDisplayed();
   }
 
+  public boolean checkContainsValue(String[] locator, String value) {
+    ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
+    return getElement(locator).getText().contains(value);
+  }
+
+  public boolean checkUrlContains(String[] locator, String value) {
+    ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
+    return getElement(locator).getAttribute(HREF).contains(value);
+  }
+
+  public List<WebElement> getChildElements(String[] locator) {
+    return getElement(locator).findElements(By.xpath("./child::*"));
+  }
+
+  public void compareImage(File expected, File actual) throws IOException {
+    SoftAssert softAssert = new SoftAssert();
+    waitForTime(5);
+    BufferedImage expectedFile = ImageIO.read(expected);
+    BufferedImage actualFile = ImageIO.read(actual);
+    try {
+      for (int i = 10; i < expectedFile.getWidth() - 1; i++) {
+        for (int j = 10; j < expectedFile.getHeight() - 1; j++) {
+          Color c1 = new Color(expectedFile.getRGB(i, j));
+          Color c2 = new Color(actualFile.getRGB(i, j));
+          softAssert.assertEquals(c2.getRed(), c1.getRed(), "Red value of RGB is not 0");
+          softAssert.assertEquals(c2.getGreen(), c1.getGreen(), "Green value of RGB is not 0");
+          softAssert.assertEquals(c2.getBlue(), c1.getBlue(), "Blue value of RGB is not 0");
+        }
+      }
+    } catch (Exception ignored) {
+      ltLogger.info(ignored);
+    }
+    softAssert.assertAll();
+  }
+
+  public boolean checkVariableAssertion(String variableAssertionType, String value, String variable) {
+    switch (variableAssertionType) {
+    case "variableMatchesValue":
+      return variable.equalsIgnoreCase(value);
+    case "variableContainsValue":
+      return variable.contains(value);
+    case "variableGreaterThanValue":
+      return Integer.parseInt(variable) > Integer.parseInt(value);
+    case "variableGreaterThanOrEqualsValue":
+      return Integer.parseInt(variable) >= Integer.parseInt(value);
+    case "variableLessThanValue":
+      return Integer.parseInt(variable) < Integer.parseInt(value);
+    case "variableEmpty":
+      return (variable == null);
+    default:
+      System.out.println("Variable assertion is not valid : " + variableAssertionType);
+      break;
+    }
+    return false;
+  }
+
   //pathToFile should contain path + FileName.png
   public void takeScreenshoot(String pathToFile) {
     try {
+      File theDir = new File("logs/Screenshoots");
+      if (!theDir.exists()) {
+        theDir.mkdirs();
+      }
       TakesScreenshot scrShot = ((TakesScreenshot) driver);
       File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
       //Move image file to new destination
@@ -656,11 +705,15 @@ public class WebDriverHelper extends Base {
 
   //pathToFile should contain path + FileName.png
   public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
+    File theDir = new File("logs/Screenshoots");
+    if (!theDir.exists()) {
+      theDir.mkdirs();
+    }
     WebElement webElement = getElement(locator);
     try {
       File destinationFile = new File(pathToFile);
       File f = webElement.getScreenshotAs(OutputType.FILE);
-      FileUtils.copyFile(f, new File("screenshots.png"));
+      FileUtils.copyFile(f, new File(pathToFile));
     } catch (Exception e) {
       ltLogger.error("Not able to capture and transfer file for Element");
     }
@@ -676,5 +729,120 @@ public class WebDriverHelper extends Base {
 
   public void deleteSpecificCookie(String cookieName) {
     driver.manage().deleteCookieNamed(cookieName);
+  }
+
+  public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
+      .ignoring(NoSuchElementException.class);
+
+    switch (waitCondition) {
+    case "CheckElement":
+      wait.until(driver1 -> {
+        try {
+          return getElement(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckClickableElement":
+      wait.until(driver1 -> {
+        try {
+          return isDisplayed(locator, 0) && isEnabled(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckEnabledElement":
+      wait.until(driver1 -> {
+        try {
+          return isEnabled(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckVisibleElement":
+      wait.until(driver1 -> {
+        try {
+          return isDisplayed(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckVisibleNotElement":
+      wait.until(driver1 -> {
+        try {
+          return !isDisplayed(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    default:
+      System.out.println("Wait condition not handled");
+      break;
+    }
+  }
+
+  private Duration refreshValue(String theRefresh) {
+    switch (theRefresh) {
+    case "ten":
+      return Duration.ofSeconds(10);
+    case "thirty":
+      return Duration.ofSeconds(30);
+    case "sixty":
+      return Duration.ofSeconds(60);
+    default:
+      return Duration.ofSeconds(0);
+    }
+  }
+
+  public void pressKey(String[] locator, String key) {
+    switch (key) {
+    case "ENTER":
+      getElement(locator).sendKeys(Keys.ENTER);
+      break;
+    case "BACK_SPACE":
+      getElement(locator).sendKeys(Keys.BACK_SPACE);
+      break;
+    default:
+      System.out.println("The key provided is not available: " + key);
+      break;
+    }
+  }
+
+  public void printResults(String item, String message) {
+    switch (item) {
+    case "Note":
+    case "Variable":
+      javascriptExecution("console.error('" + message + " via error command" + "')", driver);
+      System.out.println(message);
+      break;
+    }
+  }
+
+  public void takeScreenshootOfEntirePage(String fileName) {
+    File theDir = new File("logs/Screenshoots");
+    if (!theDir.exists()) {
+      theDir.mkdirs();
+    }
+    Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000))
+      .takeScreenshot(driver);
+    try {
+      ImageIO.write(screenshot.getImage(), "PNG", new File(fileName));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      ltLogger.error("Not able to capture and transfer file for Element");
+      e.printStackTrace();
+    }
   }
 }
