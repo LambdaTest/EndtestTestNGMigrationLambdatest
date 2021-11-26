@@ -72,6 +72,12 @@ public class StepToCode extends Constant {
     case "EndElse":
       endElse(fileName, givenTestCaseStepsDTO);
       break;
+    case "Print":
+      print(fileName, givenTestCaseStepsDTO);
+      break;
+    case "PressKey":
+      pressKey(fileName, givenTestCaseStepsDTO);
+      break;
     default:
       System.out.println("step not automated" + givenTestCaseStepsDTO);
       break;
@@ -302,7 +308,6 @@ public class StepToCode extends Constant {
 
   private void assertWithCondition(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter2());
-    fileName = TEST_PATH + fileName;
     String assertionType = testCaseStepsDTO.getParameter1();
 
     switch (assertionType) {
@@ -430,5 +435,16 @@ public class StepToCode extends Constant {
     String str = parameter.replace("\\\\", "").replace("\\", "");
     return new Gson().fromJson(str, new TypeToken<HashMap<String, String>>() {
     }.getType());
+  }
+
+  public void print(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
+    writeInFile(fileName,
+      "printResults(" + givenTestCaseStepsDTO.getParameter1() + ", \"" + givenTestCaseStepsDTO.getParameter2() + "\");");
+  }
+
+  public void pressKey(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
+    String[] locator = locatorTransform(givenTestCaseStepsDTO.getLocator(), givenTestCaseStepsDTO.getParameter2());
+    writeInFile(fileName,
+      "pressKey(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, \"" + givenTestCaseStepsDTO.getParameter2() + "\");");
   }
 }
