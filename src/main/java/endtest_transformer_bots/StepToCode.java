@@ -187,14 +187,13 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "if (checkUrlContains(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
       break;
     case "ifVariableAssertion":
-      String variableName= testCaseStepsDTO.getParameter2();
-      variableName=variableName.substring(1);
-      writeInFile(fileName, "Assert.assertEqual("+variableName+","+testCaseStepsDTO.getParameter3()+");");
+      writeInFile(fileName,
+        "Assert.assertEqual(" + testCaseStepsDTO.getParameter2() + "," + testCaseStepsDTO.getParameter3() + ");");
       break;
     case "ifVisibleElement":
-      writeInFile(fileName, "isDisplayed("+locator+", 0);");
+      writeInFile(fileName, "isDisplayed(" + locator + ", 0);");
       break;
-    case default:
+    default:
       System.out.println("step not automated" + testCaseStepsDTO);
     }
 
