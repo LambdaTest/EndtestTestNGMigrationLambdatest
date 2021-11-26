@@ -840,7 +840,6 @@ public class WebDriverHelper extends Base {
     try {
       ImageIO.write(screenshot.getImage(), "PNG", new File(fileName));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       ltLogger.error("Not able to capture and transfer file for Element");
       e.printStackTrace();
     }
