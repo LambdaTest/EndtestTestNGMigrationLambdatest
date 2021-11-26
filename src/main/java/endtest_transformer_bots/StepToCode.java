@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Random;
 
-public class StepToCode extends WebDriverHelper {
+public class StepToCode extends Constant {
 
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
 
