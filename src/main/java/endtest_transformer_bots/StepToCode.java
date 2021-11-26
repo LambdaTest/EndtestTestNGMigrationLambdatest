@@ -21,6 +21,7 @@ public class StepToCode extends Constant {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
 
   public void addCodeFromStep(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
+    String jutFileName = fileName;
     fileName = TEST_PATH + fileName;
     String switchCondition;
     switchCondition = givenTestCaseStepsDTO.getType();
@@ -65,7 +66,8 @@ public class StepToCode extends Constant {
       setVariable(fileName, givenTestCaseStepsDTO);
       break;
     case "ImportCase":
-      new EndTestTransformer().createSeleniumStepForTestID(fileName, givenTestCaseStepsDTO.getParameter1());
+      new EndTestTransformer().createSeleniumStepForTestID(jutFileName,givenTestCaseStepsDTO.getParameter1());
+      break;
     case "StartElse":
       startElse(fileName, givenTestCaseStepsDTO);
       break;
