@@ -236,8 +236,7 @@ public class StepToCode extends Constant {
       utilities(fileName, testCaseStepsDTO);
       break;
     case "WaitUntil":
-      //      ltLogger.info(testCaseStepsDTO);
-      System.out.println("step not automated" + testCaseStepsDTO);
+      waitUntil(fileName, testCaseStepsDTO);
       break;
     case "DeleteCookies":
       deleteCookies(fileName, testCaseStepsDTO);
@@ -283,6 +282,15 @@ public class StepToCode extends Constant {
       System.out.println("Test Case DTO " + testCaseStepsDTO);
       break;
     }
+  }
+
+  private void waitUntil(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    HashMap<String, String> map = storeParamValuesInHashmap(testCaseStepsDTO.getParameter2());
+    String[] locator = locatorTransform(map.get("locatorType"), map.get("locator"));
+    String waitCondition = map.get("waitCondition");
+
+    writeInFile(fileName,"waitUntil(" + waitCondition + ", new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
+      "maxTime") + "," + map.get("theRefresh") + ");");
   }
 
   public void clearLocalStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
