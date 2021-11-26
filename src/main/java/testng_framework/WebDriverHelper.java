@@ -713,7 +713,7 @@ public class WebDriverHelper extends Base {
     try {
       File destinationFile = new File(pathToFile);
       File f = webElement.getScreenshotAs(OutputType.FILE);
-      FileUtils.copyFile(f, new File("screenshots.png"));
+      FileUtils.copyFile(f, new File(pathToFile));
     } catch (Exception e) {
       ltLogger.error("Not able to capture and transfer file for Element");
     }
