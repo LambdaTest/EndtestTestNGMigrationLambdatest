@@ -136,13 +136,13 @@ public class StepToCode extends Constant {
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },/fetchScreenshoots/" + getRandomString(
+      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },logs/Screenshoots/" + getRandomString(
         6) + ".png);");
   }
 
   private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
-    writeInFile(fileName, "takeScreenshoot(/fetchScreenshoots/" + getRandomString(6) + ".png);");
+    writeInFile(fileName, "takeScreenshoot(logs/Screenshoots/" + getRandomString(6) + ".png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -258,7 +258,7 @@ public class StepToCode extends Constant {
 
   private void generateFullPageScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     writeInFile(fileName,
-      "takeScreenshootOfEntirePage(/fetchScreenshoots/"+getRandomString(6)+".png);");
+      "takeScreenshootOfEntirePage(logs/Screenshoots/"+getRandomString(6)+".png);");
 
   }
 
