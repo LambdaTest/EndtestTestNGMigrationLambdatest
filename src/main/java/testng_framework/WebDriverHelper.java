@@ -2,15 +2,19 @@ package testng_framework;
 
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
-import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -616,36 +620,65 @@ public class WebDriverHelper extends Base {
     return isAvailable;
   }
 
-  public void assertion(String assertionType, String[] locator) {
-    switch (assertionType) {
-    case "CheckClickableElement":
-      Assert.assertTrue(isElementClickable(locator));
-      break;
-    case "CheckClickableNotElement":
-      Assert.assertFalse(isElementClickable(locator));
-      break;
-    case "CheckElement":
-      Assert.assertTrue(isElementDisplayed(locator));
-      break;
-    case "CheckElementScreenshot":
-    case "CheckContainsValue":
-    case "CheckNotContainsValue":
-    case "CheckNotElement":
-    case "CheckPageScreenshot":
-    case "CheckUrlContains":
-    case "CheckVisibleElement":
-    case "CheckVisibleNotElement":
-    case "CountChildElements":
-    case "VariableAssertion":
-    default:
-//      ltLogger.info("testCaseStepsDTO not available step not created for case" + assertionType);
-      System.out.println("testCaseStepsDTO not available step not created for case" + assertionType);
-    }
-  }
-
   public boolean isElementDisplayed(String[] locator) {
     ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
     return getElement(locator).isDisplayed();
+  }
+
+  public boolean checkContainsValue(String[] locator, String value) {
+    ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
+    return getElement(locator).getText().contains(value);
+  }
+
+  public boolean checkUrlContains(String[] locator, String value) {
+    ltLogger.info("wait for element via, using ['{}','{}'] ", locator[0], locator[1]);
+    return getElement(locator).getAttribute(HREF).contains(value);
+  }
+
+  public List<WebElement> getChildElements(String[] locator) {
+    return getElement(locator).findElements(By.xpath("./child::*"));
+  }
+
+  public void compareImage(File expected, File actual) throws IOException {
+    SoftAssert softAssert = new SoftAssert();
+    waitForTime(5);
+    BufferedImage expectedFile = ImageIO.read(expected);
+    BufferedImage actualFile = ImageIO.read(actual);
+    try {
+      for (int i = 10; i < expectedFile.getWidth() - 1; i++) {
+        for (int j = 10; j < expectedFile.getHeight() - 1; j++) {
+          Color c1 = new Color(expectedFile.getRGB(i, j));
+          Color c2 = new Color(actualFile.getRGB(i, j));
+          softAssert.assertEquals(c2.getRed(), c1.getRed(), "Red value of RGB is not 0");
+          softAssert.assertEquals(c2.getGreen(), c1.getGreen(), "Green value of RGB is not 0");
+          softAssert.assertEquals(c2.getBlue(), c1.getBlue(), "Blue value of RGB is not 0");
+        }
+      }
+    } catch (Exception ignored) {
+      ltLogger.info(ignored);
+    }
+    softAssert.assertAll();
+  }
+
+  public boolean checkVariableAssertion(String variableAssertionType, String value, String variable) {
+    switch (variableAssertionType) {
+    case "variableMatchesValue":
+      return variable.equalsIgnoreCase(value);
+    case "variableContainsValue":
+      return variable.contains(value);
+    case "variableGreaterThanValue":
+      return Integer.parseInt(variable) > Integer.parseInt(value);
+    case "variableGreaterThanOrEqualsValue":
+      return Integer.parseInt(variable) >= Integer.parseInt(value);
+    case "variableLessThanValue":
+      return Integer.parseInt(variable) < Integer.parseInt(value);
+    case "variableEmpty":
+      return (variable == null);
+    default:
+      System.out.println("Variable assertion is not valid : " + variableAssertionType);
+      break;
+    }
+    return false;
   }
 
   //pathToFile should contain path + FileName.png
@@ -758,6 +791,30 @@ public class WebDriverHelper extends Base {
       return Duration.ofSeconds(60);
     default:
       return Duration.ofSeconds(0);
+    }
+  }
+
+  public void pressKey(String[] locator, String key) {
+    switch (key) {
+    case "ENTER":
+      getElement(locator).sendKeys(Keys.ENTER);
+      break;
+    case "BACK_SPACE":
+      getElement(locator).sendKeys(Keys.BACK_SPACE);
+      break;
+    default:
+      System.out.println("The key provided is not available: " + key);
+      break;
+    }
+  }
+
+  public void printResults(String item, String message) {
+    switch (item) {
+    case "Note":
+    case "Variable":
+      javascriptExecution("console.error('" + message + " via error command" + "')", driver);
+      System.out.println(message);
+      break;
     }
   }
 }
