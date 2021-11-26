@@ -661,6 +661,10 @@ public class WebDriverHelper extends Base {
   //pathToFile should contain path + FileName.png
   public void takeScreenshoot(String pathToFile) {
     try {
+      File theDir = new File("/fetchScreenshoots");
+      if (!theDir.exists()){
+        theDir.mkdirs();
+      }
       TakesScreenshot scrShot = ((TakesScreenshot) driver);
       File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
       //Move image file to new destination
@@ -675,6 +679,10 @@ public class WebDriverHelper extends Base {
 
   //pathToFile should contain path + FileName.png
   public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
+    File theDir = new File("/fetchScreenshoots");
+    if (!theDir.exists()){
+      theDir.mkdirs();
+    }
     WebElement webElement = getElement(locator);
     try {
       File destinationFile = new File(pathToFile);
@@ -771,6 +779,10 @@ public class WebDriverHelper extends Base {
     }
   }
   public void takeScreenshootOfEntirePage(String fileName){
+    File theDir = new File("/fetchScreenshoots");
+    if (!theDir.exists()){
+      theDir.mkdirs();
+    }
     Screenshot screenshot=new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000)).takeScreenshot(driver);
     try {
       ImageIO.write(screenshot.getImage(),"PNG",new File(fileName));
