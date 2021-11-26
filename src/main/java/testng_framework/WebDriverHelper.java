@@ -10,12 +10,17 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
 
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
@@ -666,4 +671,14 @@ public class WebDriverHelper extends Base {
     }
   }
 
+  public void takeScreenshootOfEntirePage(String fileName){
+    Screenshot screenshot=new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000)).takeScreenshot(driver);
+    try {
+      ImageIO.write(screenshot.getImage(),"PNG",new File(fileName));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      ltLogger.error("Not able to capture and transfer file for Element");
+      e.printStackTrace();
+    }
+  }
 }
