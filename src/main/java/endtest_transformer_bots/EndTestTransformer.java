@@ -58,10 +58,7 @@ public class EndTestTransformer {
       new TypeToken<List<TestCaseStepsDTO>>() {
       }.getType());
 
-    System.out.println(listOfTestCaseSteps);
-
     for (TestCaseStepsDTO t : listOfTestCaseSteps) {
-      System.out.println(t);
       stepToCode.addCodeFromStep(filename, t);
     }
   }
