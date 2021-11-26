@@ -271,9 +271,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger
-        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
-          locator, methodName);
+      ltLogger.info(
+        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
+        methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -732,8 +732,8 @@ public class WebDriverHelper extends Base {
   }
 
   public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
-    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(
+        Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
       .ignoring(NoSuchElementException.class);
 
     switch (waitCondition) {
@@ -842,6 +842,37 @@ public class WebDriverHelper extends Base {
     } catch (IOException e) {
       ltLogger.error("Not able to capture and transfer file for Element");
       e.printStackTrace();
+    }
+  }
+
+  public void scroll(String condition, int pixel) {
+    JavascriptExecutor js = (JavascriptExecutor) driver;
+    int height = driver.manage().window().getSize().getHeight();
+    switch (condition) {
+    case "ScrollDown":
+      js.executeScript("window.scrollBy(0," + pixel + ")", "");
+      break;
+    case "ScrollUp":
+      js.executeScript("window.scrollBy(0,-" + pixel + ")", "");
+      break;
+    case "ScrollLeft":
+      js.executeScript("window.scrollBy(-" + pixel + ",0)", "");
+      break;
+    case "ScrollRight":
+      js.executeScript("window.scrollBy(" + pixel + ",0)", "");
+      break;
+    case "ScrollBottom":
+      js.executeScript("window.scrollTo(0, " + height + ")");
+      break;
+    case "ScrollTop":
+      js.executeScript("window.scrollTo(0, -" + height + ")");
+      break;
+    case "ScrollElem":
+
+      break;
+    default:
+      System.out.println("Condition not available - " + condition);
+      break;
     }
   }
 }
