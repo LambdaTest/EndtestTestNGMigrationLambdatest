@@ -65,7 +65,7 @@ public class StepToCode extends Constant {
       setVariable(fileName, givenTestCaseStepsDTO);
       break;
     case "ImportCase":
-      new EndTestTransformer().createSeleniumStepForTestID(fileName,givenTestCaseStepsDTO.getParameter1());
+      new EndTestTransformer().createSeleniumStepForTestID(fileName, givenTestCaseStepsDTO.getParameter1());
     case "StartElse":
       startElse(fileName, givenTestCaseStepsDTO);
       break;
@@ -287,8 +287,9 @@ public class StepToCode extends Constant {
     String[] locator = locatorTransform(map.get("locatorType"), map.get("locator"));
     String waitCondition = map.get("waitCondition");
 
-    writeInFile(fileName,"waitUntil(" + waitCondition + ", new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
-      "maxTime") + "," + map.get("theRefresh") + ");");
+    writeInFile(fileName,
+      "waitUntil(" + waitCondition + ", new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
+        "maxTime") + "," + map.get("theRefresh") + ");");
   }
 
   public void clearLocalStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -314,11 +315,17 @@ public class StepToCode extends Constant {
         "Assert.assertFalse(isElementClickable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
       break;
     case "CheckElement":
+      writeInFile(fileName,
+        "Assert.assertTrue(isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      break;
+    case "CheckNotElement":
+      writeInFile(fileName,
+        "Assert.assertFalse(isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
+      break;
     case "CheckVisibleElement":
       writeInFile(fileName,
         "Assert.assertTrue(isElementDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
       break;
-    case "CheckNotElement":
     case "CheckVisibleNotElement":
       writeInFile(fileName,
         "Assert.assertFalse(isElementDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}));");
