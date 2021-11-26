@@ -24,7 +24,6 @@ public class StepToCode extends Constant {
     fileName = TEST_PATH + fileName;
     String switchCondition;
     switchCondition = givenTestCaseStepsDTO.getType();
-
     switch (switchCondition) {
     case "GetLink":
       getLinkT(fileName, givenTestCaseStepsDTO);
@@ -65,6 +64,8 @@ public class StepToCode extends Constant {
     case "SetVariable":
       setVariable(fileName, givenTestCaseStepsDTO);
       break;
+    case "ImportCase":
+      new EndTestTransformer().createSeleniumStepForTestID(fileName,givenTestCaseStepsDTO.getParameter1());
     case "StartElse":
       startElse(fileName, givenTestCaseStepsDTO);
       break;
@@ -234,8 +235,17 @@ public class StepToCode extends Constant {
       utilities(fileName, testCaseStepsDTO);
       break;
     case "WaitUntil":
-      //      ltLogger.info(testCaseStepsDTO);
-      System.out.println("step not automated" + testCaseStepsDTO);
+      waitUntil(fileName, testCaseStepsDTO);
+      break;
+    case "DeleteCookies":
+      deleteCookies(fileName, testCaseStepsDTO);
+      break;
+    case "ClearLocalStorage":
+      clearLocalStorage(fileName, testCaseStepsDTO);
+      break;
+    case "ClearSessionStorage":
+      clearSessionStorage(fileName, testCaseStepsDTO);
+      break;
     default:
       //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
@@ -254,6 +264,39 @@ public class StepToCode extends Constant {
       System.out.println("Test Case DTO " + testCaseStepsDTO);
       break;
     }
+  }
+
+  private void deleteCookies(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    String deleteCookieType = testCaseStepsDTO.getParameter2();
+
+    switch (deleteCookieType) {
+    case "DeleteAllCookies":
+      writeInFile(fileName, "deleteAllCookies();");
+      break;
+    case "DeleteCookie":
+      writeInFile(fileName, "deleteSpecificCookie(" + testCaseStepsDTO.getParameter3() + ");");
+      break;
+    default:
+      System.out.println("Test Case DTO " + testCaseStepsDTO);
+      break;
+    }
+  }
+
+  private void waitUntil(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    HashMap<String, String> map = storeParamValuesInHashmap(testCaseStepsDTO.getParameter2());
+    String[] locator = locatorTransform(map.get("locatorType"), map.get("locator"));
+    String waitCondition = map.get("waitCondition");
+
+    writeInFile(fileName,"waitUntil(" + waitCondition + ", new String[]{" + locator[0] + ", \"" + locator[1] + "\"}, " + map.get(
+      "maxTime") + "," + map.get("theRefresh") + ");");
+  }
+
+  public void clearLocalStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "javascriptExecution(String.format(\"window.localStorage.clear();\"));");
+  }
+
+  public void clearSessionStorage(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName, "javascriptExecution(String.format(\"window.sessionStorage.clear();\"));");
   }
 
   private void assertWithCondition(String fileName, TestCaseStepsDTO testCaseStepsDTO) {

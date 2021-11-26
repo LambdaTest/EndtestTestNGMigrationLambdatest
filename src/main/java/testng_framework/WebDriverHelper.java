@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
@@ -252,6 +253,14 @@ public class WebDriverHelper extends Base {
 
   public void waitForElement(String[] locator) {
     waitForElement(locator, 30);
+  }
+
+  public boolean isEnabled(String[] locator, int waitTime) {
+    try {
+      return getElement(locator, waitTime).isEnabled();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public boolean isDisplayed(String[] locator) {
@@ -701,6 +710,88 @@ public class WebDriverHelper extends Base {
 
   public int getTextLength(String str) {
     return str.length();
+  }
+
+  public void deleteAllCookies() {
+    driver.manage().deleteAllCookies();
+  }
+
+  public void deleteSpecificCookie(String cookieName) {
+    driver.manage().deleteCookieNamed(cookieName);
+  }
+
+  public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime)))
+      .pollingEvery(refreshValue(theRefresh)).ignoring(NoSuchElementException.class);
+
+    switch (waitCondition) {
+    case "CheckElement":
+      wait.until(driver1 -> {
+        try {
+          return getElement(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckClickableElement":
+    wait.until(driver1 -> {
+      try {
+        return isDisplayed(locator, 0) && isEnabled(locator, 0);
+      } catch (Exception e) {
+        pageRefresh();
+      }
+      return null;
+    });
+      break;
+    case "CheckEnabledElement":
+      wait.until(driver1 -> {
+        try {
+          return isEnabled(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckVisibleElement":
+      wait.until(driver1 -> {
+        try {
+          return isDisplayed(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    case "CheckVisibleNotElement":
+      wait.until(driver1 -> {
+        try {
+          return !isDisplayed(locator, 0);
+        } catch (Exception e) {
+          pageRefresh();
+        }
+        return null;
+      });
+      break;
+    default:
+      System.out.println("Wait condition not handled");
+      break;
+    }
+  }
+
+  private Duration refreshValue(String theRefresh) {
+    switch (theRefresh) {
+    case "ten":
+      return Duration.ofSeconds(10);
+    case "thirty":
+      return Duration.ofSeconds(30);
+    case "sixty":
+      return Duration.ofSeconds(60);
+    default:
+      return Duration.ofSeconds(0);
+    }
   }
 
   public void pressKey(String[] locator, String key) {
