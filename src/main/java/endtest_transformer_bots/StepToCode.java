@@ -247,11 +247,20 @@ public class StepToCode extends Constant {
     case "ClearSessionStorage":
       clearSessionStorage(fileName, testCaseStepsDTO);
       break;
+    case "GenerateFullPageScreenshot":
+      generateFullPageScreenshoot(fileName, testCaseStepsDTO);
+      break;
     default:
       //      ltLogger.info(testCaseStepsDTO);
       System.out.println("step not automated" + testCaseStepsDTO);
       break;
     }
+  }
+
+  private void generateFullPageScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(fileName,
+      "takeScreenshootOfEntirePage(/logs/ss/"+getRandomString(6)+".png);");
+
   }
 
   private void utilities(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
