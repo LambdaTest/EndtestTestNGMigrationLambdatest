@@ -640,7 +640,7 @@ public class WebDriverHelper extends Base {
   }
 
   public void compareImage(File expected, File actual) throws IOException {
-    SoftAssert softAssert = EnvSetup.SOFT_ASSERT.get();
+    SoftAssert softAssert = new SoftAssert();
     waitForTime(5);
     BufferedImage expectedFile = ImageIO.read(expected);
     BufferedImage actualFile = ImageIO.read(actual);
@@ -657,7 +657,7 @@ public class WebDriverHelper extends Base {
     } catch (Exception ignored) {
       ltLogger.info(ignored);
     }
-    EnvSetup.SOFT_ASSERT.set(softAssert);
+    softAssert.assertAll();
   }
 
   public boolean checkVariableAssertion(String variableAssertionType, String value, String variable) {
