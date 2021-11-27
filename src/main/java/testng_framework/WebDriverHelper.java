@@ -867,9 +867,6 @@ public class WebDriverHelper extends Base {
     case "ScrollTop":
       js.executeScript("window.scrollTo(0, -" + height + ")");
       break;
-    case "ScrollElem":
-
-      break;
     default:
       System.out.println("Condition not available - " + condition);
       break;
