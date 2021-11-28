@@ -685,7 +685,7 @@ public class WebDriverHelper extends Base {
   }
 
   //pathToFile should contain path + FileName.png
-  public void takeScreenshoot(String pathToFile) {
+  public void takeScreenshot(String pathToFile) {
     try {
       File theDir = new File("logs/Screenshoots");
       if (!theDir.exists()) {
@@ -704,7 +704,7 @@ public class WebDriverHelper extends Base {
   }
 
   //pathToFile should contain path + FileName.png
-  public void takeScreenshootOfParticularElement(String[] locator, String pathToFile) {
+  public void takeScreenshotOfParticularElement(String[] locator, String pathToFile) {
     File theDir = new File("logs/Screenshoots");
     if (!theDir.exists()) {
       theDir.mkdirs();
@@ -830,7 +830,7 @@ public class WebDriverHelper extends Base {
     }
   }
 
-  public void takeScreenshootOfEntirePage(String fileName) {
+  public void takeScreenshotOfEntirePage(String fileName) {
     File theDir = new File("logs/Screenshoots");
     if (!theDir.exists()) {
       theDir.mkdirs();

@@ -54,7 +54,7 @@ public class StepToCode extends Constant {
       snippingTool(fileName, givenTestCaseStepsDTO);
       break;
     case "TakeScreenshot":
-      TakeScreenshoot(fileName, givenTestCaseStepsDTO);
+      takeScreenshot(fileName, givenTestCaseStepsDTO);
       break;
     case "Pause":
       pause(fileName, givenTestCaseStepsDTO);
@@ -144,13 +144,13 @@ public class StepToCode extends Constant {
   private void snippingTool(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter1());
     writeInFile(fileName,
-      "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },logs/Screenshoots/" + getRandomString(
+      "takeScreenshotOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" },logs/Screenshoots/" + getRandomString(
         6) + ".png);");
   }
 
-  private void TakeScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
+  private void takeScreenshot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     //do we have to make filepath and file name different for image
-    writeInFile(fileName, "takeScreenshoot(logs/Screenshoots/" + getRandomString(6) + ".png);");
+    writeInFile(fileName, "takeScreenshot(logs/Screenshoots/" + getRandomString(6) + ".png);");
   }
 
   private void pickOptionFromSelect(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -192,14 +192,14 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "if (!isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
       break;
     case "ifUrlContains":
-      writeInFile(fileName, "if (checkUrlContains(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
+      writeInFile(fileName, "if (checkUrlContains(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})) {");
       break;
     case "ifVariableAssertion":
       writeInFile(fileName,
-        "Assert.assertEqual(" + testCaseStepsDTO.getParameter2() + "," + testCaseStepsDTO.getParameter3() + ");");
+        "if (Assert.assertEqual(" + testCaseStepsDTO.getParameter2() + "," + testCaseStepsDTO.getParameter3() + ")) {");
       break;
     case "ifVisibleElement":
-      writeInFile(fileName, "isDisplayed(" + locator + ", 0);");
+      writeInFile(fileName, "if (isDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\", 0)) {");
       break;
     default:
       System.out.println("step not automated" + testCaseStepsDTO);
@@ -292,7 +292,7 @@ public class StepToCode extends Constant {
   }
 
   private void generateFullPageScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "takeScreenshootOfEntirePage(logs/Screenshoots/" + getRandomString(6) + ".png);");
+    writeInFile(fileName, "takeScreenshotOfEntirePage(logs/Screenshoots/" + getRandomString(6) + ".png);");
 
   }
 
@@ -393,11 +393,11 @@ public class StepToCode extends Constant {
       break;
     case "CheckElementScreenshot":
       writeInFile(fileName, "getURL(" + testCaseStepsDTO
-        .getParameter3() + "\");\n" + "takeScreenshootOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
+        .getParameter3() + "\");\n" + "takeScreenshotOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
       break;
     case "CheckPageScreenshot":
       writeInFile(fileName, "getURL(" + testCaseStepsDTO
-        .getParameter2() + "\");\n" + "takeScreenshoot(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
+        .getParameter2() + "\");\n" + "takeScreenshot(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
       break;
     case "VariableAssertion":
       writeInFile(fileName,
