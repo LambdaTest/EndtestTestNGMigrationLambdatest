@@ -48,10 +48,8 @@ public class CreateSuiteFromTestCode extends Constant {
         status = new File(SUITE_XML_PATH + suiteName + ".xml").createNewFile();
         String xmlTxt = DYNAMIC_XML_BODY.replace(CLASS_NAME_PLACE_HOLDER_IN_XML, suiteName);
         writeToFile(SUITE_XML_PATH + suiteName + ".xml", xmlTxt);
-        System.out.println(status);
       } catch (IOException e) {
         e.printStackTrace();
-        System.out.println(status);
       }
     }
     if (!isSuiteClassExist) {
@@ -63,10 +61,8 @@ public class CreateSuiteFromTestCode extends Constant {
         //        String classText = DYNAMIC_SUITE_CLASS_BODY.replace(CLASS_NAME_PLACE_HOLDER_IN_XML, SuiteName);
         writeToFile(SUITE_CLASS_PATH + suiteName + ".java",
           DYNAMIC_SUITE_CLASS_BODY.replace(CLASS_NAME_PLACE_HOLDER_IN_XML, suiteName));
-        System.out.println(status);
       } catch (IOException e) {
         e.printStackTrace();
-        System.out.println(status);
       }
     }
   }
@@ -101,6 +97,5 @@ public class CreateSuiteFromTestCode extends Constant {
     String finalSuitClassBody = suiteClassFileContent + TEST_START_BODY.replaceAll(TEST_NAME_PLACEHOLDER_IN_TEST,
       testName) + "\n" + testFileContent + "\n" + TEST_END_BODY + SUITE_CLASS_END_BODY;
     writeToFile(SUITE_CLASS_PATH + suiteName + ".java", finalSuitClassBody);
-    System.out.println(finalSuitClassBody);
   }
 }

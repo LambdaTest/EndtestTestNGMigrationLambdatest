@@ -342,7 +342,11 @@ public class WebDriverHelper extends Base {
   }
 
   public void javascriptExecution(String script) {
-    javascriptExecution(script, driver);
+    try {
+      driver.executeScript(script);
+    } catch (Exception e){
+      ltLogger.info("java script execution failed");
+    }
   }
 
   public void javascriptExecution(String script, WebElement element) {

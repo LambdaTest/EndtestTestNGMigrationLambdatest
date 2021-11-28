@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 
 import java.net.URL;
+import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 public class Base extends Constant {
@@ -40,6 +41,7 @@ public class Base extends Constant {
     try {
       driver = new RemoteWebDriver(new URL(gridURL), capability);
       driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS);
       actions = new Actions(driver);
       EnvSetup.driver.set(driver);
     } catch (Exception e) {
@@ -50,7 +52,7 @@ public class Base extends Constant {
 
   @AfterTest
   public void afterTest() {
-    driver = EnvSetup.driver.get();
+//    driver = EnvSetup.driver.get();
     try{
       ((JavascriptExecutor) driver).executeScript("lambda-status=" + status + "");
     }catch (Exception e){
@@ -58,7 +60,10 @@ public class Base extends Constant {
     } finally {
       if (driver != null) {
         driver.quit();
+      } else{
+        driver.quit();
       }
+
     }
   }
 

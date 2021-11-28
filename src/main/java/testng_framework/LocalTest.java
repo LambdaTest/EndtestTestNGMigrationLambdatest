@@ -71,7 +71,6 @@ public class LocalTest {
 
   @AfterTest
   public static void afterTest() {
-    System.out.println(status);
     ((JavascriptExecutor) driver).executeScript("lambda-status=" + status + "");
     driver.quit();
   }
