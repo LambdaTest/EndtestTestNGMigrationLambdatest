@@ -23,7 +23,7 @@ public class Constant {
   protected static final String SUITE_CLASS_PATH = System.getProperty("user.dir").split(
     "EndtestTestNGMigrationLambdatest")[0] + "EndtestTestNGMigrationLambdatest" + "/" + "src/main/java/generated_tests/";
   protected static final String SUITE_CLASS_END_BODY = "}";
-  protected static final String DYNAMIC_SUITE_CLASS_BODY = "package generated_tests;\n" + "\n" + "import testng_framework.WebDriverHelper;\n" + "import org.testng.annotations.Test;\n" + "\n" + "public class <addSuiteName> extends WebDriverHelper {\n" + "\n" + " \n" + "}";
+  protected static final String DYNAMIC_SUITE_CLASS_BODY = "package generated_tests;\n" + "\n" + "import testng_framework.WebDriverHelper;\n" + "import org.testng.Assert;\n" + "import org.testng.annotations.Test;\n" + "\n" + "public class <addSuiteName> extends WebDriverHelper {\n" + "\n" + " \n" + "}";
   protected static final String TEST_PATH = System.getProperty("user.dir")
     .split("EndtestTestNGMigrationLambdatest")[0] + "EndtestTestNGMigrationLambdatest" + "/" + "logs/testsFiles/";
   protected static final String TEST_FILE_EXTENSION = "";
