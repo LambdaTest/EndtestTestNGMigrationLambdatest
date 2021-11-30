@@ -83,6 +83,8 @@ public class StepToCode extends Constant {
     case "Scroll":
       scroll(fileName, givenTestCaseStepsDTO);
       break;
+    case "Loop":
+      loop(fileName, givenTestCaseStepsDTO);
     default:
       System.out.println("step not automated" + givenTestCaseStepsDTO);
       break;
@@ -138,6 +140,12 @@ public class StepToCode extends Constant {
 
   private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
     writeInFile(fileName, "javascriptExecution(\"" + testCaseStepsDTO.getParameter1() + "\");");
+  }
+
+  private void loop(String fileName, TestCaseStepsDTO testCaseStepsDTO){
+    writeInFile(fileName,"for(int i=0;i<"+testCaseStepsDTO.getParameter2()+";i++){");
+    new EndTestTransformer().createSeleniumStepForTestID(fileName, testCaseStepsDTO.getParameter1());
+    writeInFile(fileName,"}");
   }
 
   private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
