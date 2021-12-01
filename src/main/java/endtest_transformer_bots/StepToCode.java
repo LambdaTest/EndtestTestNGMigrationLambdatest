@@ -25,6 +25,7 @@ public class StepToCode extends Constant {
     fileName = TEST_PATH + fileName;
     String switchCondition;
     switchCondition = givenTestCaseStepsDTO.getType();
+    writeInFile(fileName, "// " + givenTestCaseStepsDTO.getStep_name());
     switch (switchCondition) {
     case "GetLink":
       getLinkT(fileName, givenTestCaseStepsDTO);
@@ -142,10 +143,10 @@ public class StepToCode extends Constant {
     writeInFile(fileName, "javascriptExecution(\"" + testCaseStepsDTO.getParameter1() + "\");");
   }
 
-  private void loop(String justFileName, TestCaseStepsDTO testCaseStepsDTO){
-    writeInFile(justFileName,"for(int i=0;i<"+testCaseStepsDTO.getParameter2()+";i++){");
+  private void loop(String justFileName, TestCaseStepsDTO testCaseStepsDTO) {
+    writeInFile(justFileName, "for(int i=0;i<" + testCaseStepsDTO.getParameter2() + ";i++){");
     new EndTestTransformer().createSeleniumStepForTestID(justFileName, testCaseStepsDTO.getParameter1());
-    writeInFile(justFileName,"}");
+    writeInFile(justFileName, "}");
   }
 
   private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -444,11 +445,14 @@ public class StepToCode extends Constant {
       int lastIndex = filePath.lastIndexOf("/");
       dirPath = filePath.substring(0, lastIndex);
     } else {
-      dirPath = "/logs";
+      dirPath = "logs/";
     }
     boolean status = false;
     try {
-      FileUtils.forceMkdir(new File(dirPath));
+      File theDir = new File(dirPath);
+      if (!theDir.exists()) {
+        theDir.mkdirs();
+      }
       status = new File(filePath).createNewFile();
     } catch (IOException e) {
       e.printStackTrace();
