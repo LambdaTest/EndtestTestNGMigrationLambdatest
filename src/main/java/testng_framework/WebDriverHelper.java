@@ -642,6 +642,10 @@ public class WebDriverHelper extends Base {
     return getElement(locator).getAttribute(HREF).contains(value);
   }
 
+  public boolean checkCurrentUrlContains(String value) {
+    return getCurrentURL().contains(value);
+  }
+
   public List<WebElement> getChildElements(String[] locator) {
     return getElement(locator).findElements(By.xpath("./child::*"));
   }
