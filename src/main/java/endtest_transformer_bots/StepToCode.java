@@ -197,7 +197,7 @@ public class StepToCode extends Constant {
       break;
     case "ifContainsValue":
       writeInFile(fileName,
-        "if (checkContainsValue(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, " + testCaseStepsDTO.getParameter3() + ")){");
+        "if (checkContainsValue(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, \"" + testCaseStepsDTO.getParameter3() + "\")){");
       break;
     case "ifElement":
       writeInFile(fileName, "if (isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
