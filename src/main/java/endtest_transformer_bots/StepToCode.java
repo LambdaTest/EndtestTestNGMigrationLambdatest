@@ -501,7 +501,7 @@ public class StepToCode extends Constant {
     String[] locator = locatorTransform(CSS, givenTestCaseStepsDTO.getParameter2());
     switch (condition) {
     case "ScrollElem":
-      writeInFile(fileName, "scrollIntoElementView( new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+      writeInFile(fileName, "scrollIntoElementView( new String[] {CSS, \"" + locator[1] + "\"});");
       break;
     case "ScrollTop":
     case "ScrollBottom":
