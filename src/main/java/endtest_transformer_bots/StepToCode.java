@@ -86,6 +86,7 @@ public class StepToCode extends Constant {
       break;
     case "Loop":
       loop(justFileName, givenTestCaseStepsDTO);
+      break;
     default:
       System.out.println("step not automated" + givenTestCaseStepsDTO);
       break;
@@ -132,7 +133,7 @@ public class StepToCode extends Constant {
   private void setVariableFromElement(String fileName, TestCaseStepsDTO testCaseStepsDTO, String variableName) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter3());
     writeInFile(fileName,
-      "String" + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+      "String " + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
   }
 
   private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
@@ -144,9 +145,9 @@ public class StepToCode extends Constant {
   }
 
   private void loop(String justFileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(justFileName, "for(int i=0;i<" + testCaseStepsDTO.getParameter2() + ";i++){");
+    writeInFile(TEST_PATH + justFileName, "for(int i=0;i<" + testCaseStepsDTO.getParameter2() + ";i++){");
     new EndTestTransformer().createSeleniumStepForTestID(justFileName, testCaseStepsDTO.getParameter1());
-    writeInFile(justFileName, "}");
+    writeInFile(TEST_PATH + justFileName, "}");
   }
 
   private void pause(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -194,7 +195,8 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "if (!isElementClickable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
       break;
     case "ifContainsValue":
-      writeInFile(fileName, "if (checkContainsValue(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
+      writeInFile(fileName,
+        "if (checkContainsValue(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, \"" + testCaseStepsDTO.getParameter3() + "\")){");
       break;
     case "ifElement":
       writeInFile(fileName, "if (isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
@@ -203,7 +205,7 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "if (!isElementAvailable(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})){");
       break;
     case "ifUrlContains":
-      writeInFile(fileName, "if (checkUrlContains(new String[] { " + locator[0] + ", \"" + locator[1] + "\"})) {");
+      writeInFile(fileName, "if (checkCurrentUrlContains(\"" + locator[1] + "\")) {");
       break;
     case "ifVariableAssertion":
       writeInFile(fileName,
@@ -390,11 +392,11 @@ public class StepToCode extends Constant {
       break;
     case "CheckUrlContains":
       writeInFile(fileName,
-        "Assert.assertTrue(checkUrlContains(" + testCaseStepsDTO.getParameter1() + ", \"" + testCaseStepsDTO.getParameter2() + "\");");
+        "Assert.assertTrue(checkCurrentUrlContains( \"" + testCaseStepsDTO.getParameter2() + "\"));");
       break;
     case "CountChildElements":
       writeInFile(fileName,
-        "Assert.assertEquals(getChildElements(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }.size(), \"" + testCaseStepsDTO.getParameter3() + "\");");
+        "Assert.assertEquals(getChildElements(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).size(), \"" + testCaseStepsDTO.getParameter3() + "\");");
       break;
     case "CheckElementScreenshot":
       writeInFile(fileName,
