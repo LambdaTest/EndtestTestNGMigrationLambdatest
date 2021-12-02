@@ -344,7 +344,7 @@ public class WebDriverHelper extends Base {
   public void javascriptExecution(String script) {
     try {
       driver.executeScript(script);
-    } catch (Exception e){
+    } catch (Exception e) {
       ltLogger.info("java script execution failed");
     }
   }
@@ -851,7 +851,6 @@ public class WebDriverHelper extends Base {
 
   public void scroll(String condition, int pixel) {
     JavascriptExecutor js = (JavascriptExecutor) driver;
-    int height = driver.manage().window().getSize().getHeight();
     switch (condition) {
     case "ScrollDown":
       js.executeScript("window.scrollBy(0," + pixel + ")", "");
@@ -865,11 +864,20 @@ public class WebDriverHelper extends Base {
     case "ScrollRight":
       js.executeScript("window.scrollBy(" + pixel + ",0)", "");
       break;
+    default:
+      System.out.println("Condition not available - " + condition);
+      break;
+    }
+  }
+
+  public void scroll(String condition) {
+    JavascriptExecutor js = (JavascriptExecutor) driver;
+    switch (condition) {
     case "ScrollBottom":
-      js.executeScript("window.scrollTo(0, " + height + ")");
+      js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
       break;
     case "ScrollTop":
-      js.executeScript("window.scrollTo(0, -" + height + ")");
+      js.executeScript("window.scrollTo(0, -document.body.scrollHeight)");
       break;
     default:
       System.out.println("Condition not available - " + condition);
