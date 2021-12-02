@@ -5,7 +5,6 @@ import io.restassured.RestAssured;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
@@ -871,14 +870,14 @@ public class WebDriverHelper extends Base {
     }
   }
 
-  public void scroll(String condition){
-    Actions actions = new Actions(driver);
-    switch(condition){
+  public void scroll(String condition) {
+    JavascriptExecutor js = (JavascriptExecutor) driver;
+    switch (condition) {
     case "ScrollBottom":
-      actions.sendKeys(Keys.END).build().perform();
+      js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
       break;
     case "ScrollTop":
-      actions.sendKeys(Keys.HOME).build().perform();
+      js.executeScript("window.scrollTo(0, -document.body.scrollHeight)");
       break;
     default:
       System.out.println("Condition not available - " + condition);

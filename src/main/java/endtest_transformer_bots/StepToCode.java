@@ -512,6 +512,9 @@ public class StepToCode extends Constant {
       writeInFile(fileName,
         "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\", " + givenTestCaseStepsDTO.getParameter2() + ");");
       break;
+    default:
+      System.out.println("Condition not matched.. " +condition);
+      break;
     }
   }
 }
