@@ -495,14 +495,23 @@ public class StepToCode extends Constant {
   }
 
   public void scroll(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
-    if (givenTestCaseStepsDTO.getParameter1().equalsIgnoreCase("ScrollElem")) {
-      String[] locator = locatorTransform(CSS, givenTestCaseStepsDTO.getParameter2());
+    String condition = givenTestCaseStepsDTO.getParameter1();
+    String[] locator = locatorTransform(CSS, givenTestCaseStepsDTO.getParameter2());
+    switch (condition) {
+    case "ScrollElem":
       writeInFile(fileName, "scrollIntoElementView( new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
-    } else if (givenTestCaseStepsDTO.getParameter1()
-      .equalsIgnoreCase("ScrollTop") || givenTestCaseStepsDTO.getParameter1().equalsIgnoreCase("ScrollBottom")) {
+      break;
+    case "ScrollTop":
+    case "ScrollBottom":
       writeInFile(fileName, "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\");");
-    } else
+      break;
+    case "ScrollLeft":
+    case "ScrollRight":
+    case "ScrollUp":
+    case "ScrollDown":
       writeInFile(fileName,
-        "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\", \"" + givenTestCaseStepsDTO.getParameter2() + "\");");
+        "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\", " + givenTestCaseStepsDTO.getParameter2() + ");");
+      break;
+    }
   }
 }
