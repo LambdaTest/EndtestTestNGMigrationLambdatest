@@ -486,6 +486,9 @@ public class StepToCode extends Constant {
     if (givenTestCaseStepsDTO.getParameter1().equalsIgnoreCase("ScrollElem")) {
       String[] locator = locatorTransform(CSS, givenTestCaseStepsDTO.getParameter2());
       writeInFile(fileName, "scrollIntoElementView( new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
+    } else if (givenTestCaseStepsDTO.getParameter1()
+      .equalsIgnoreCase("ScrollTop") || givenTestCaseStepsDTO.getParameter1().equalsIgnoreCase("ScrollBottom")) {
+      writeInFile(fileName, "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\");");
     } else
       writeInFile(fileName,
         "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\", \"" + givenTestCaseStepsDTO.getParameter2() + "\");");
