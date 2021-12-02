@@ -870,6 +870,10 @@ public class WebDriverHelper extends Base {
     }
   }
 
+  public boolean checkCurrentUrlContains(String value) {
+    return getCurrentURL().contains(value);
+  }
+
   public void scroll(String condition) {
     JavascriptExecutor js = (JavascriptExecutor) driver;
     switch (condition) {

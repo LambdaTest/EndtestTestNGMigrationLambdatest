@@ -303,7 +303,7 @@ public class StepToCode extends Constant {
   }
 
   private void generateFullPageScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "takeScreenshotOfEntirePage(logs/Screenshoots/" + getRandomString(6) + ".png);");
+    writeInFile(fileName, "takeScreenshotOfEntirePage(\"logs/Screenshoots/" + getRandomString(6) + ".png\");");
 
   }
 
@@ -312,7 +312,7 @@ public class StepToCode extends Constant {
     String method = map.get("method");
     switch (method) {
     case "GetTextLength":
-      writeInFile(fileName, "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
+      writeInFile(fileName, "String " + map.get("value_two") + " = String.valueOf(getTextLength(" + map.get("value_one") + "));");
       break;
     default:
       System.out.println("Test Case DTO " + testCaseStepsDTO);
