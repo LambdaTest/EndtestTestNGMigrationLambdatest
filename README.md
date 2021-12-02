@@ -18,7 +18,7 @@ Steps:-
 15. curl --location --request GET 'http://localhost:9990/endTest/getSuiteTestIdDateAndSaveInLinkingDB?appId=<appID>&appCode=<APP_code>'
 16. run command:- mvn test -P transform
 17. above command will create .txt for all suite added in mongo
-18. run command: TestSuiteXMLCreation.xml
+18. run command: mvn test -P DynamicSuite -DsuiteXml=TestSuiteXMLCreation.xml
 19. above command will create xml runner files and selenium code for each suite.
 20. set Lambdatest credential via below command. https://automation.lambdatest.com/timeline/?viewType=build&page=1
 21. run command:- export LT_USERNAME=="<lambdatest Automation username>"
