@@ -1,13 +1,20 @@
 package testng_framework;
 
+import cucumberRunnerFiles.testrunner.EnvSetup;
 import io.github.sukgu.Shadow;
 import io.restassured.RestAssured;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
@@ -18,6 +25,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,10 +35,18 @@ import java.time.Duration;
 
 public class WebDriverHelper extends Base {
   private final org.apache.logging.log4j.Logger ltLogger = LogManager.getLogger(WebDriverHelper.class);
+  private RemoteWebDriver driver;
 
   public WebDriverHelper() {
     super();
+    if (!EnvSetup.driver.get().equals(null)){
+      driver = EnvSetup.driver.get();
+      System.out.println("webdriver Helper" + driver);
+      System.out.println("webdriver Helper" + EnvSetup.driver.get());
+      actions = new Actions(driver);
+    }
   }
+
 
   public WebDriverHelper(RemoteWebDriver testDriver) {
     super();
@@ -40,6 +56,66 @@ public class WebDriverHelper extends Base {
       driver = testDriver;
     }
   }
+
+  @BeforeTest(alwaysRun = true)
+  @Parameters(value = { "browser", "version", "platform", "build", "name", "platformName", "deviceName",
+    "platformVersion" })
+  public void setUp(String browser, String version, String platform, String build, String name, String platformName,
+    String deviceName, String platformVersion) {
+    System.out.println("before test");
+    DesiredCapabilities capability = new DesiredCapabilities();
+    if (isProvided(browser)) {
+      capability.setCapability(CapabilityType.BROWSER_NAME, browser);
+    }
+    if (isProvided(version)) {
+      capability.setCapability(CapabilityType.VERSION, version);
+    }
+    if (isProvided(platform)) {
+      capability.setCapability(CapabilityType.PLATFORM, platform);
+    }
+    if (isProvided(build)) {
+      capability.setCapability("build", build);
+    }
+    if (isProvided(name)) {
+      capability.setCapability("name", name);
+    }
+    if (isProvided(platformName)) {
+      capability.setCapability("platformName", platformName);
+    }
+    if (isProvided(deviceName)) {
+      capability.setCapability("deviceName", deviceName);
+    }
+    if (isProvided(platformVersion)) {
+      capability.setCapability("platformVersion", platformVersion);
+    }
+
+    capability.setCapability("network", false);
+    capability.setCapability("video", true);
+    capability.setCapability("console", false);
+    capability.setCapability("visual", false);
+
+    String gridURL = "http://" + username + ":" + accessKey + "@hub.lambdatest.com/wd/hub";
+    try {
+      driver = new RemoteWebDriver(new URL(gridURL), capability);
+      driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS);
+      actions = new Actions(driver);
+      EnvSetup.driver.set(driver);
+    } catch (Exception e) {
+      ltLogger.error("driver creation fail");
+      ltLogger.error(e.getMessage());
+    }
+  }
+
+  @AfterTest
+  public void afterTest() {
+    EnvSetup.driver.get().quit();
+  }
+
+  public boolean isProvided(String givenValue) {
+    return !(givenValue == null || givenValue.isEmpty());
+  }
+
 
   public void getURL(String url) {
     ltLogger.info("Open URL : ['{}'] ", url);
@@ -868,6 +944,10 @@ public class WebDriverHelper extends Base {
       System.out.println("Condition not available - " + condition);
       break;
     }
+  }
+
+  public boolean checkCurrentUrlContains(String value) {
+    return getCurrentURL().contains(value);
   }
 
   public void scroll(String condition) {

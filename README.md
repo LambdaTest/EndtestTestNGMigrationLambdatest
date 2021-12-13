@@ -18,9 +18,19 @@ Steps:-
 15. curl --location --request GET 'http://localhost:9990/endTest/getSuiteTestIdDateAndSaveInLinkingDB?appId=<appID>&appCode=<APP_code>'
 16. run command:- mvn test -P transform
 17. above command will create .txt for all suite added in mongo
-18. run command: TestSuiteXMLCreation.xml
+18. run command: mvn test -P DynamicSuite -DsuiteXml=TestSuiteXMLCreation.xml
 19. above command will create xml runner files and selenium code for each suite.
 20. set Lambdatest credential via below command. https://automation.lambdatest.com/timeline/?viewType=build&page=1
-21. run command:- export LT_USERNAME=="<lambdatest Automation username>"
+21. run command:- export LT_USERNAME="<lambdatest Automation username>"
 22. run command:- export LT_ACCESS_KEY="<lambdatest Automation key>"
-23. run each suite via command:-  mvn test -P DynamicSuite -DsuiteXml=<suitename>.xml
+23. run each suite via command:-  mvn test -P testNGRunner -DsuiteXml=<suitename>.xml
+
+
+
+add key and username for Lambdatest in cucumber.yaml
+2. create feature file for each java suite file in src/main/java/features
+3. create a test as a scenario in each feature file.
+4. create step def in src/main/java/StepDef
+5. steps will be plan text don't take variables for default steps as your int value in name will be treated as variable.
+6. use the below command to run your test. CUCUMBER_FILTER_TAGS=<Tag> mvn test -P cucumberRun  -DsuiteXmlFile=<parallel count xml> -DJENKINS_JOB_IDENTIFIER=<unique build name. use ${BUILD_ID} if using jenkins>
+7. eg:- CUCUMBER_FILTER_TAGS=@regression_colombia_ecom_1 mvn test -P cucumberRun  -DsuiteXmlFile=5Parallel.xml -DJENKINS_JOB_IDENTIFIER=Run1
