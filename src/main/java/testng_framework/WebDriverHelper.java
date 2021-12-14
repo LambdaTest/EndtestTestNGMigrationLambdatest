@@ -689,7 +689,19 @@ public class WebDriverHelper extends Base {
   public void selectOption(String[] locator, String valueToSelect) {
     WebElement ele = getElement(locator);
     Select select = new Select(ele);
-    select.selectByValue(valueToSelect);
+    try {
+      select.selectByValue(valueToSelect);
+    }catch (Exception e){
+      try {
+        select.selectByVisibleText(valueToSelect);
+      }catch (Exception e1){
+        try {
+          select.selectByIndex(Integer.parseInt(valueToSelect));
+        }catch (Exception e2){
+          ltLogger.error("Element not found");
+        }
+      }
+    }
   }
 
   public boolean isElementAvailable(String[] locator) {
@@ -722,12 +734,12 @@ public class WebDriverHelper extends Base {
     return getElement(locator).findElements(By.xpath("./child::*"));
   }
 
-  public void compareImage(File expected, File actual) throws IOException {
+  public void compareImage(File expected, File actual) {
     SoftAssert softAssert = new SoftAssert();
     waitForTime(5);
-    BufferedImage expectedFile = ImageIO.read(expected);
-    BufferedImage actualFile = ImageIO.read(actual);
     try {
+      BufferedImage expectedFile = ImageIO.read(expected);
+      BufferedImage actualFile = ImageIO.read(actual);
       for (int i = 10; i < expectedFile.getWidth() - 1; i++) {
         for (int j = 10; j < expectedFile.getHeight() - 1; j++) {
           Color c1 = new Color(expectedFile.getRGB(i, j));

@@ -34,3 +34,4 @@ target
 .gradle
 **endtest.iml
 logs/
+rerun/
