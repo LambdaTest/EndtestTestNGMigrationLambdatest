@@ -6,6 +6,7 @@ import testng_framework.ApiHelper;
 import com.google.common.reflect.TypeToken;
 import org.testng.annotations.Test;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +46,8 @@ public class EndTestTransformer {
   public void createSeleniumStepFromJsonStep(List<TestCaseStepsDTO> listOfTestCaseSteps,
     SuiteIdProjectIdForTestIdDTO suiteIdProjectIdForTestIdDTO) {
     for (TestCaseStepsDTO t : listOfTestCaseSteps) {
-      String fileName = suiteIdProjectIdForTestIdDTO.getSuiteName().replace(" ", "_")
-        .replaceAll("[^a-zA-Z_]", "") + "--_--" + t.getName().replace(" ", "_").replaceAll("[^a-zA-Z_]", "") + ".txt";
+      String fileName = numberCharsToWord(suiteIdProjectIdForTestIdDTO.getSuiteName().replace(" ", "_"))
+        .replaceAll("[^a-zA-Z_]", "") + "--_--" + numberCharsToWord(t.getName().replace(" ", "_")).replaceAll("[^a-zA-Z_]", "") + ".txt";
       stepToCode.addCodeFromStep(fileName, t);
     }
   }
@@ -61,6 +62,49 @@ public class EndTestTransformer {
     for (TestCaseStepsDTO t : listOfTestCaseSteps) {
       stepToCode.addCodeFromStep(filename, t);
     }
+  }
+
+  public String numberCharsToWord(String givenName) {
+    char[] charArr = givenName.toCharArray();
+    String finalName = "";
+    for (char c : charArr) {
+      switch (String.valueOf(c)) {
+      case "0":
+        finalName = finalName.concat("zero");
+        break;
+      case "1":
+        finalName = finalName.concat("One");
+        break;
+      case "2":
+        finalName = finalName.concat("Two");
+        break;
+      case "3":
+        finalName = finalName.concat("Three");
+        break;
+      case "4":
+        finalName = finalName.concat("Four");
+        break;
+      case "5":
+        finalName = finalName.concat("Five");
+        break;
+      case "6":
+        finalName = finalName.concat("Six");
+        break;
+      case "7":
+        finalName = finalName.concat("Seven");
+        break;
+      case "8":
+        finalName = finalName.concat("Eight");
+        break;
+      case "9":
+        finalName = finalName.concat("Nine");
+        break;
+      default:
+        finalName = finalName.concat(String.valueOf(c));
+        break;
+      }
+    }
+    return finalName;
   }
 
 }

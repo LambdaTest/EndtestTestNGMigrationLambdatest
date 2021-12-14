@@ -16,19 +16,94 @@ import java.util.stream.Collectors;
 public class CreateSuiteFromTestCode extends Constant {
 
   @Test
-  public static void generateSuiteFromTest() {
+  public void generateSuiteFromTest() {
     List<Path> allFilesPath = getAllFilePathIn(TEST_PATH);
     for (Path filePath : allFilesPath) {
       String filename = filePath.getFileName().toString();
-      String suitName = filename.split(SUITE_TEST_SEPARATOR)[0];
+      String suiteName = filename.split(SUITE_TEST_SEPARATOR)[0];
       String testName = filename.split(SUITE_TEST_SEPARATOR)[1].replaceAll(".txt", "").replaceAll(" ", "_")
         .replaceAll("[^a-zA-Z_]]", "");
-      createXMLAndClassIfNotExist(suitName);
-      addTestToSuiteClass(suitName, testName);
+      // create feature and step file if not exist
+      createFeatureAndStepIfNotExist(suiteName);
+      // add scenario and step definitions
+      addScenarioToFeatureFile(suiteName, testName);
+      addStepToStepDefFile(suiteName, testName);
+      // add scenario to feature file and step file.
+      createXMLAndClassIfNotExist(suiteName);
+      addTestToSuiteClass(suiteName, testName);
     }
   }
 
-  public static List<Path> getAllFilePathIn(String folderPath) {
+  private void addStepToStepDefFile(String suiteName, String testName) {
+    String stepDefFileContent = null;
+    String stepContents = null;
+    try {
+      stepDefFileContent = new String(
+        Files.readAllBytes(Paths.get(SUITE_STEP_FILE_PATH + suiteName + "_StepDef.java")));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    int lastIndex = 0;
+    if (stepDefFileContent != null && !stepDefFileContent.equalsIgnoreCase("")) {
+      lastIndex = stepDefFileContent.lastIndexOf("}");
+      System.out.println("last Index:- "+ lastIndex + "  FileName:- " + suiteName + "_" + testName);
+      stepDefFileContent = stepDefFileContent.substring(0, lastIndex);
+    } else {
+      System.out.println("file is empty");
+    }
+    stepContents = SCENARIO_STEP_BODY.replaceAll(SCENARIO_NAME_PLACEHOLDER, testName.replaceAll("_", " "))
+      .replaceAll(TEST_STEP_METHOD, testName)
+      .replaceAll(SUITE_CLASS_OBJECT_NAME_IN_STEP, suiteName.replaceAll("_", ""));
+    writeToFile(SUITE_STEP_FILE_PATH + suiteName + "_StepDef.java",
+      stepDefFileContent + stepContents + SUITE_CLASS_END_BODY);
+  }
+
+  private void addScenarioToFeatureFile(String suiteName, String testName) {
+    String scenarioContents = null;
+    String featureFileContent = null;
+    try {
+      featureFileContent = new String(Files.readAllBytes(Paths.get(SUITE_FEATURE_PATH + suiteName + ".feature")));
+      Integer suiteTagCount = featureFileContent.split(suiteName).length - 1;
+      String currtestTag = suiteName + "_" + suiteTagCount;
+      scenarioContents = DYNAMIC_SCENARIO_BODY.replaceAll(SCENARIO_NAME_PLACEHOLDER, testName.replaceAll("_", " "))
+        .replaceAll(SCENARIO_TEST_TAG_PLACEHOLDER, currtestTag);
+
+      writeToFile(SUITE_FEATURE_PATH + suiteName + ".feature", featureFileContent + scenarioContents);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void createFeatureAndStepIfNotExist(String suiteName) {
+    boolean isFeatureFileExist = new File(SUITE_FEATURE_PATH + suiteName + ".feature").isFile();
+    boolean isStepFileExist = new File(SUITE_STEP_FILE_PATH + suiteName + "_StepDef.java").isFile();
+    if (!isFeatureFileExist) {
+      boolean status = false;
+      try {
+        FileUtils.forceMkdir(new File(SUITE_FEATURE_PATH));
+        status = new File(SUITE_FEATURE_PATH + suiteName + ".feature").createNewFile();
+        String featureTxt = DYNAMIC_FEATURE_BODY.replace(FEATURE_FILE_TAG, suiteName)
+          .replace(FEATURE_NAME, suiteName.replaceAll("_", " "));
+        writeToFile(SUITE_FEATURE_PATH + suiteName + ".feature", featureTxt);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    if (!isStepFileExist) {
+      boolean status = false;
+      try {
+        FileUtils.forceMkdir(new File(SUITE_STEP_FILE_PATH));
+        status = new File(SUITE_STEP_FILE_PATH + suiteName + "_StepDef.java").createNewFile();
+        String stepTxt = DYNAMIC_STEP_DEF_BODY.replace(SUITE_CLASS_NAME_IN_STEP, suiteName)
+          .replace(SUITE_CLASS_OBJECT_NAME_IN_STEP, suiteName.replaceAll("_", ""));
+        writeToFile(SUITE_STEP_FILE_PATH + suiteName + "_StepDef.java", stepTxt);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public List<Path> getAllFilePathIn(String folderPath) {
     try {
       return Files.list(Paths.get(folderPath)).filter(Files::isRegularFile).collect(Collectors.toList());
     } catch (IOException e) {
@@ -37,7 +112,7 @@ public class CreateSuiteFromTestCode extends Constant {
     return null;
   }
 
-  public static void createXMLAndClassIfNotExist(String suiteName) {
+  public void createXMLAndClassIfNotExist(String suiteName) {
     boolean isSuiteClassExist = new File(SUITE_CLASS_PATH + suiteName + ".java").isFile();
     boolean isSuiteXmlExist = new File(SUITE_XML_PATH + suiteName + ".xml").isFile();
     if (!isSuiteXmlExist) {
@@ -67,7 +142,7 @@ public class CreateSuiteFromTestCode extends Constant {
     }
   }
 
-  public static void writeToFile(String path, String textToWrite) {
+  public void writeToFile(String path, String textToWrite) {
     try (FileWriter myWriter = new FileWriter(path);) {
       myWriter.write(textToWrite);
       System.out.println("Successfully wrote to the file.");
@@ -77,7 +152,7 @@ public class CreateSuiteFromTestCode extends Constant {
     }
   }
 
-  public static void addTestToSuiteClass(String suiteName, String testName) {
+  public void addTestToSuiteClass(String suiteName, String testName) {
     String testFileContent = null;
     String suiteClassFileContent = null;
     try {

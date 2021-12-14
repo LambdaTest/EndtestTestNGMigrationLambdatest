@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.logging.log4j.LogManager;
 import testng_framework.Constant;
-import org.apache.commons.io.FileUtils;
 import testng_framework.WebDriverHelper;
 
 import java.io.BufferedWriter;
