@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -131,16 +133,26 @@ public class StepToCode extends Constant {
 
   private void setVariableFromElement(String fileName, TestCaseStepsDTO testCaseStepsDTO, String variableName) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter3());
-    writeInFile(fileName,
-      "String " + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+    if (isFileContains(variableName, fileName)) {
+      writeInFile(fileName,
+        variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+    } else {
+      writeInFile(fileName,
+        "String " + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+    }
   }
 
   private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
-    writeInFile(fileName, "String " + variableName + "= \"" + variableValue + "\";");
+    if (isFileContains(variableName, fileName)) {
+      writeInFile(fileName, variableName + "= \"" + variableValue + "\";");
+    } else {
+      writeInFile(fileName, "String " + variableName + "= \"" + variableValue + "\";");
+    }
   }
 
   private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "javascriptExecution(\"" + testCaseStepsDTO.getParameter1() + "\");");
+    writeInFile(fileName,
+      "javascriptExecution(\"" + testCaseStepsDTO.getParameter1().replaceAll("\r\n", "").replaceAll("\n", "") + "\");");
   }
 
   private void loop(String justFileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -406,8 +418,8 @@ public class StepToCode extends Constant {
         "getURL(" + testCaseStepsDTO.getParameter2() + "\");\n" + "takeScreenshot(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
       break;
     case "VariableAssertion":
-      writeInFile(fileName,
-        "Assert.assertEquals(checkVariableAssertion(" + testCaseStepsDTO.getLocator() + ", \"" + testCaseStepsDTO.getParameter3() + ", \"" + testCaseStepsDTO.getParameter3() + "\");");
+      writeInFile(fileName, "Assert.assertEquals(checkVariableAssertion(\"" + testCaseStepsDTO.getLocator()
+        .trim() + "\", \"" + testCaseStepsDTO.getParameter3() + "\", \"" + testCaseStepsDTO.getParameter3() + "\");");
       break;
     default:
       System.out.println("step not automated" + testCaseStepsDTO);
@@ -437,6 +449,16 @@ public class StepToCode extends Constant {
       System.out.println(e.getMessage());
       e.printStackTrace();
     }
+  }
+
+  public boolean isFileContains(String containsString, String filePathWithName) {
+    String fileString = "";
+    try {
+      fileString = new String(Files.readAllBytes(Paths.get(filePathWithName)));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return fileString.contains(containsString);
   }
 
   public static void createDirectoryAndFile(String filePath) {
@@ -514,7 +536,7 @@ public class StepToCode extends Constant {
         "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\", " + givenTestCaseStepsDTO.getParameter2() + ");");
       break;
     default:
-      System.out.println("Condition not matched.. " +condition);
+      System.out.println("Condition not matched.. " + condition);
       break;
     }
   }

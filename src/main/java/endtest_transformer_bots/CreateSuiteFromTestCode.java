@@ -46,7 +46,6 @@ public class CreateSuiteFromTestCode extends Constant {
     int lastIndex = 0;
     if (stepDefFileContent != null && !stepDefFileContent.equalsIgnoreCase("")) {
       lastIndex = stepDefFileContent.lastIndexOf("}");
-      System.out.println("last Index:- "+ lastIndex + "  FileName:- " + suiteName + "_" + testName);
       stepDefFileContent = stepDefFileContent.substring(0, lastIndex);
     } else {
       System.out.println("file is empty");
