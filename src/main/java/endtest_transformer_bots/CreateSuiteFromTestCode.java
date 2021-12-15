@@ -169,7 +169,8 @@ public class CreateSuiteFromTestCode extends Constant {
       System.out.println("file is empty");
     }
     String finalSuitClassBody = suiteClassFileContent + TEST_START_BODY.replaceAll(TEST_NAME_PLACEHOLDER_IN_TEST,
-      testName) + "\n" + testFileContent + "\n" + TEST_END_BODY + SUITE_CLASS_END_BODY;
+      testName).replaceAll(SCENARIO_NAME_PLACEHOLDER,
+      testName.replaceAll("_", " ")) + "\n" + testFileContent + "\n" + TEST_END_BODY + SUITE_CLASS_END_BODY;
     writeToFile(SUITE_CLASS_PATH + suiteName + ".java", finalSuitClassBody);
   }
 }
