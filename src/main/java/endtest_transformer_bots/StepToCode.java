@@ -209,7 +209,7 @@ public class StepToCode extends Constant {
       break;
     case "ifVariableAssertion":
       writeInFile(fileName,
-        "if (Assert.assertEqual(" + testCaseStepsDTO.getParameter2() + "," + testCaseStepsDTO.getParameter3() + ")) {");
+        "if (checkVariableAssertion( \"" +testCaseStepsDTO.getLocator()+ "\" , "+testCaseStepsDTO.getParameter2()+" , \""+ testCaseStepsDTO.getParameter3()+"\") ){ ");
       break;
     case "ifVisibleElement":
       writeInFile(fileName, "if (isDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, 0)) {");
@@ -408,7 +408,7 @@ public class StepToCode extends Constant {
       break;
     case "VariableAssertion":
       writeInFile(fileName,
-        "Assert.assertEquals(checkVariableAssertion(" + testCaseStepsDTO.getLocator() + ", \"" + testCaseStepsDTO.getParameter3() + ", \"" + testCaseStepsDTO.getParameter3() + "\");");
+        "Assert.assertTrue(checkVariableAssertion(\"" + testCaseStepsDTO.getLocator() + "\", " + testCaseStepsDTO.getParameter2() + ", \"" + testCaseStepsDTO.getParameter3() + "\"));");
       break;
     default:
       System.out.println("step not automated" + testCaseStepsDTO);

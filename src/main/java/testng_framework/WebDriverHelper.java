@@ -750,11 +750,11 @@ public class WebDriverHelper extends Base {
     case "variableContainsValue":
       return variable.contains(value);
     case "variableGreaterThanValue":
-      return Integer.parseInt(variable) > Integer.parseInt(value);
+      return Double.parseDouble(variable) > Double.parseDouble(value);
     case "variableGreaterThanOrEqualsValue":
-      return Integer.parseInt(variable) >= Integer.parseInt(value);
+      return Double.parseDouble(variable) >= Double.parseDouble(value);
     case "variableLessThanValue":
-      return Integer.parseInt(variable) < Integer.parseInt(value);
+      return Double.parseDouble(variable) < Double.parseDouble(value);
     case "variableEmpty":
       return (variable == null);
     default:
