@@ -39,14 +39,13 @@ public class WebDriverHelper extends Base {
 
   public WebDriverHelper() {
     super();
-    if (!EnvSetup.driver.get().equals(null)){
+    if (!EnvSetup.driver.get().equals(null)) {
       driver = EnvSetup.driver.get();
       System.out.println("webdriver Helper" + driver);
       System.out.println("webdriver Helper" + EnvSetup.driver.get());
       actions = new Actions(driver);
     }
   }
-
 
   public WebDriverHelper(RemoteWebDriver testDriver) {
     super();
@@ -115,7 +114,6 @@ public class WebDriverHelper extends Base {
   public boolean isProvided(String givenValue) {
     return !(givenValue == null || givenValue.isEmpty());
   }
-
 
   public void getURL(String url) {
     ltLogger.info("Open URL : ['{}'] ", url);
@@ -347,9 +345,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger.info(
-        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
-        methodName);
+      ltLogger
+        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
+          locator, methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -689,7 +687,19 @@ public class WebDriverHelper extends Base {
   public void selectOption(String[] locator, String valueToSelect) {
     WebElement ele = getElement(locator);
     Select select = new Select(ele);
-    select.selectByValue(valueToSelect);
+    try {
+      select.selectByValue(valueToSelect);
+    } catch (Exception e) {
+      try {
+        select.selectByVisibleText(valueToSelect);
+      } catch (Exception e1) {
+        try {
+          select.selectByIndex(Integer.parseInt(valueToSelect));
+        } catch (Exception e2) {
+          ltLogger.error("Element not found");
+        }
+      }
+    }
   }
 
   public boolean isElementAvailable(String[] locator) {
@@ -722,12 +732,12 @@ public class WebDriverHelper extends Base {
     return getElement(locator).findElements(By.xpath("./child::*"));
   }
 
-  public void compareImage(File expected, File actual) throws IOException {
+  public void compareImage(File expected, File actual) {
     SoftAssert softAssert = new SoftAssert();
     waitForTime(5);
-    BufferedImage expectedFile = ImageIO.read(expected);
-    BufferedImage actualFile = ImageIO.read(actual);
     try {
+      BufferedImage expectedFile = ImageIO.read(expected);
+      BufferedImage actualFile = ImageIO.read(actual);
       for (int i = 10; i < expectedFile.getWidth() - 1; i++) {
         for (int j = 10; j < expectedFile.getHeight() - 1; j++) {
           Color c1 = new Color(expectedFile.getRGB(i, j));
@@ -812,8 +822,8 @@ public class WebDriverHelper extends Base {
   }
 
   public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
-    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(
-        Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
       .ignoring(NoSuchElementException.class);
 
     switch (waitCondition) {

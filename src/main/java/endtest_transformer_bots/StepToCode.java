@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.logging.log4j.LogManager;
 import testng_framework.Constant;
-import org.apache.commons.io.FileUtils;
 import testng_framework.WebDriverHelper;
 
 import java.io.BufferedWriter;
@@ -13,6 +12,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -132,16 +133,26 @@ public class StepToCode extends Constant {
 
   private void setVariableFromElement(String fileName, TestCaseStepsDTO testCaseStepsDTO, String variableName) {
     String[] locator = locatorTransform(testCaseStepsDTO.getLocator(), testCaseStepsDTO.getParameter3());
-    writeInFile(fileName,
-      "String " + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+    if (isFileContains(variableName, fileName)) {
+      writeInFile(fileName,
+        variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+    } else {
+      writeInFile(fileName,
+        "String " + variableName + " = getText(new String[] { " + locator[0] + ", \"" + locator[1] + "\"  } );");
+    }
   }
 
   private void setVariableEnterValue(String fileName, String variableName, String variableValue) {
-    writeInFile(fileName, "String " + variableName + "= \"" + variableValue + "\";");
+    if (isFileContains(variableName, fileName)) {
+      writeInFile(fileName, variableName + "= \"" + variableValue + "\";");
+    } else {
+      writeInFile(fileName, "String " + variableName + "= \"" + variableValue + "\";");
+    }
   }
 
   private void executeJS(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "javascriptExecution(\"" + testCaseStepsDTO.getParameter1() + "\");");
+    writeInFile(fileName,
+      "javascriptExecution(\"" + testCaseStepsDTO.getParameter1().replaceAll("\r\n", "").replaceAll("\n", "") + "\");");
   }
 
   private void loop(String justFileName, TestCaseStepsDTO testCaseStepsDTO) {
@@ -312,7 +323,7 @@ public class StepToCode extends Constant {
     String method = map.get("method");
     switch (method) {
     case "GetTextLength":
-      writeInFile(fileName, "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
+      writeInFile(fileName, "int " + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
       break;
     default:
       System.out.println("Test Case DTO " + testCaseStepsDTO);
@@ -440,6 +451,16 @@ public class StepToCode extends Constant {
     }
   }
 
+  public boolean isFileContains(String containsString, String filePathWithName) {
+    String fileString = "";
+    try {
+      fileString = new String(Files.readAllBytes(Paths.get(filePathWithName)));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return fileString.contains(containsString);
+  }
+
   public static void createDirectoryAndFile(String filePath) {
     // need to revisit this code
     String dirPath;
@@ -515,7 +536,7 @@ public class StepToCode extends Constant {
         "scroll(\"" + givenTestCaseStepsDTO.getParameter1() + "\", " + givenTestCaseStepsDTO.getParameter2() + ");");
       break;
     default:
-      System.out.println("Condition not matched.. " +condition);
+      System.out.println("Condition not matched.. " + condition);
       break;
     }
   }
