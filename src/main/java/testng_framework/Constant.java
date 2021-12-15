@@ -33,7 +33,7 @@ public class Constant {
     .split("EndtestTestNGMigrationLambdatest")[0] + "EndtestTestNGMigrationLambdatest" + "/" + "logs/testsFiles/";
   protected static final String TEST_FILE_EXTENSION = "";
   protected static final String SUITE_TEST_SEPARATOR = "--_--";
-  protected static final String TEST_START_BODY = "  @Test\n" + "  public void <addTestName>() {";
+  protected static final String TEST_START_BODY = "  @Test\n" + "  public void <addTestName>() {\n" + "javascriptExecution(\"lambda-name=<SCENARIO_NAME>\");" + "\n";
   protected static final String TEST_END_BODY = "    status = \"passed\"; \n " + "  }\n";
   protected static final String TEST_NAME_PLACEHOLDER_IN_TEST = "<addTestName>";
   protected static final String DYNAMIC_FEATURE_BODY = "@<FEATURE_FILE_TAG>\n" + "Feature: <FEATURE_NAME> \n";

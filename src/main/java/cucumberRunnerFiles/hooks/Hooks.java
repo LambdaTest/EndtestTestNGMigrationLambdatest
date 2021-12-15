@@ -27,7 +27,7 @@ public class Hooks extends Constant {
     System.out.println("get capability inside");
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setCapability("browserName", "Chrome");
-    capabilities.setCapability("version", "latest");
+    capabilities.setCapability("version", "latest-2");
     capabilities.setCapability("platform", "Windows 10");
     capabilities.setCapability("resolution", "1920x1080");
     capabilities.setCapability("build",
@@ -49,7 +49,7 @@ public class Hooks extends Constant {
     try {
       RemoteWebDriver testDriver = new RemoteWebDriver(new URL(gridURL), caps);
       testDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-      testDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+      testDriver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
       testDriver.manage().window().maximize();
       EnvSetup.driver.set(testDriver);
       System.out.println("hook"+EnvSetup.driver.get());
