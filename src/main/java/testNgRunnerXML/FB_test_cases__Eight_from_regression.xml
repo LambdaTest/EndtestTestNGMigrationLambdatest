@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite thread-count="1" verbose="1" name="Lambdatest Suite"
+	annotations="JDK" parallel="tests">
+
+	<test name="Test1">
+		<parameter name="browser" value="Chrome" />
+		<parameter name="version" value="latest-1" />
+		<parameter name="platform" value="win10" />
+		<parameter name="build" value="FB_test_cases__Eight_from_regression" />
+		<parameter name="name" value="FB_test_cases__Eight_from_regression" />
+		<classes>
+			<class name="generated_tests.FB_test_cases__Eight_from_regression" />
+		</classes>
+	</test>
+
+</suite>
