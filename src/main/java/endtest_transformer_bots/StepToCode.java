@@ -411,7 +411,7 @@ public class StepToCode extends Constant {
       break;
     case "CheckElementScreenshot":
       writeInFile(fileName,
-        "getURL(" + testCaseStepsDTO.getParameter3() + "\");\n" + "takeScreenshotOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
+        "getURL(\"" + testCaseStepsDTO.getParameter3() + "\");\n" + "takeScreenshotOfParticularElement(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }, System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
       break;
     case "CheckPageScreenshot":
       writeInFile(fileName,
