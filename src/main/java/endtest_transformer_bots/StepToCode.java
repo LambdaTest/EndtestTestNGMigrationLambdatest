@@ -220,7 +220,7 @@ public class StepToCode extends Constant {
       break;
     case "ifVariableAssertion":
       writeInFile(fileName,
-        "if (Assert.assertEqual(" + testCaseStepsDTO.getParameter2() + "," + testCaseStepsDTO.getParameter3() + ")) {");
+        "if (checkVariableAssertion( \"" +testCaseStepsDTO.getLocator()+ "\" , "+testCaseStepsDTO.getParameter2()+" , \""+ testCaseStepsDTO.getParameter3()+"\") ){ ");
       break;
     case "ifVisibleElement":
       writeInFile(fileName, "if (isDisplayed(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, 0)) {");
@@ -323,7 +323,7 @@ public class StepToCode extends Constant {
     String method = map.get("method");
     switch (method) {
     case "GetTextLength":
-      writeInFile(fileName, "String" + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
+      writeInFile(fileName, "int " + map.get("value_two") + " = getTextLength(" + map.get("value_one") + ");");
       break;
     default:
       System.out.println("Test Case DTO " + testCaseStepsDTO);
@@ -418,8 +418,8 @@ public class StepToCode extends Constant {
         "getURL(" + testCaseStepsDTO.getParameter2() + "\");\n" + "takeScreenshot(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\");\n" + "compareImage(new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/expected_Image.png\"), new File(System.getProperty(\"user.dir\") + \"src/main/resources/files/actual_Image.png\"));");
       break;
     case "VariableAssertion":
-      writeInFile(fileName, "Assert.assertEquals(checkVariableAssertion(\"" + testCaseStepsDTO.getLocator()
-        .trim() + "\", \"" + testCaseStepsDTO.getParameter3() + "\", \"" + testCaseStepsDTO.getParameter3() + "\");");
+      writeInFile(fileName,
+        "Assert.assertTrue(checkVariableAssertion(\"" + testCaseStepsDTO.getLocator() + "\", " + testCaseStepsDTO.getParameter2() + ", \"" + testCaseStepsDTO.getParameter3() + "\"));");
       break;
     default:
       System.out.println("step not automated" + testCaseStepsDTO);

@@ -39,14 +39,13 @@ public class WebDriverHelper extends Base {
 
   public WebDriverHelper() {
     super();
-    if (!EnvSetup.driver.get().equals(null)){
+    if (!EnvSetup.driver.get().equals(null)) {
       driver = EnvSetup.driver.get();
       System.out.println("webdriver Helper" + driver);
       System.out.println("webdriver Helper" + EnvSetup.driver.get());
       actions = new Actions(driver);
     }
   }
-
 
   public WebDriverHelper(RemoteWebDriver testDriver) {
     super();
@@ -115,7 +114,6 @@ public class WebDriverHelper extends Base {
   public boolean isProvided(String givenValue) {
     return !(givenValue == null || givenValue.isEmpty());
   }
-
 
   public void getURL(String url) {
     ltLogger.info("Open URL : ['{}'] ", url);
@@ -347,9 +345,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger.info(
-        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
-        methodName);
+      ltLogger
+        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
+          locator, methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -691,13 +689,13 @@ public class WebDriverHelper extends Base {
     Select select = new Select(ele);
     try {
       select.selectByValue(valueToSelect);
-    }catch (Exception e){
+    } catch (Exception e) {
       try {
         select.selectByVisibleText(valueToSelect);
-      }catch (Exception e1){
+      } catch (Exception e1) {
         try {
           select.selectByIndex(Integer.parseInt(valueToSelect));
-        }catch (Exception e2){
+        } catch (Exception e2) {
           ltLogger.error("Element not found");
         }
       }
@@ -762,11 +760,11 @@ public class WebDriverHelper extends Base {
     case "variableContainsValue":
       return variable.contains(value);
     case "variableGreaterThanValue":
-      return Integer.parseInt(variable) > Integer.parseInt(value);
+      return Double.parseDouble(variable) > Double.parseDouble(value);
     case "variableGreaterThanOrEqualsValue":
-      return Integer.parseInt(variable) >= Integer.parseInt(value);
+      return Double.parseDouble(variable) >= Double.parseDouble(value);
     case "variableLessThanValue":
-      return Integer.parseInt(variable) < Integer.parseInt(value);
+      return Double.parseDouble(variable) < Double.parseDouble(value);
     case "variableEmpty":
       return (variable == null);
     default:
@@ -824,8 +822,8 @@ public class WebDriverHelper extends Base {
   }
 
   public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
-    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(
-        Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
       .ignoring(NoSuchElementException.class);
 
     switch (waitCondition) {
