@@ -1,8 +1,8 @@
 package endtest_transformer_bots;
 
+import DTO.response.TestCaseStepsDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.logging.log4j.LogManager;
 import testng_framework.Constant;
 import testng_framework.WebDriverHelper;

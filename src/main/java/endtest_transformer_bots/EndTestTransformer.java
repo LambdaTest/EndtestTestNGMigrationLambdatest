@@ -1,12 +1,11 @@
 package endtest_transformer_bots;
 
-import mongo_services.DTO.response.SuiteIdProjectIdForTestIdDTO;
-import mongo_services.DTO.response.TestCaseStepsDTO;
+import DTO.response.SuiteIdProjectIdForTestIdDTO;
+import DTO.response.TestCaseStepsDTO;
 import testng_framework.ApiHelper;
 import com.google.common.reflect.TypeToken;
 import org.testng.annotations.Test;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
