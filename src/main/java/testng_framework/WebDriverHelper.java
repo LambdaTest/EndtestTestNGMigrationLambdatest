@@ -134,9 +134,11 @@ public class WebDriverHelper extends Base {
 
   public void pageRefresh() {
     driver.navigate().refresh();
+    waitForTime(5);
   }
 
   public WebElement getElement(String[] locator, int waitTime) {
+    //    waitForTime(20);
     if (waitTime > 0) {
       waitForElement(locator, waitTime);
     }
@@ -189,17 +191,40 @@ public class WebDriverHelper extends Base {
   }
 
   public void typeText(String[] locator, String text) {
-    WebElement ele = getElement(locator);
-    ele.sendKeys(text);
+    try {
+      WebElement ele = getElement(locator);
+      ele.clear();
+      ele.sendKeys(text);
+    } catch (Exception e) {
+      waitForTime(10);
+      WebElement ele = getElement(locator);
+      ele.sendKeys(text);
+    }
   }
 
   public void typeText(WebElement ele, String text) {
-    ele.sendKeys(text);
+    try {
+      ele.clear();
+      ele.sendKeys(text);
+    } catch (Exception e) {
+      waitForTime(10);
+      ele.sendKeys(text);
+    }
   }
+
+  public void updateValueOfElementViaJS(String[] locator, String textValue) {
+    WebElement ele = getElement(locator);
+    javascriptExecution("arguments[0].setAttribute('value', '" + textValue + "')", ele);
+  }
+
 
   public void clickAndTypeText(String[] locator, String text) {
     WebElement ele = getElement(locator);
-    ele.click();
+    try {
+      ele.click();
+    } catch (Exception e) {
+      clickOnElementViaJS(ele);
+    }
     typeText(ele, text);
   }
 
@@ -214,9 +239,30 @@ public class WebDriverHelper extends Base {
   }
 
   public void clickOnElement(String[] locator) {
-    WebElement ele = getElement(locator);
-    clickOnElement(ele);
+    WebElement ele;
+    try {
+      ele = getElement(locator);
+      clickOnElement(ele);
+    } catch (Exception e) {
+      ltLogger.info(e.getMessage());
+      waitForTime(10);
+      ele = getElement(locator);
+      clickOnElement(ele);
+    }
     ltLogger.info("click on element '{}' successful", ele);
+  }
+
+  public void dismiss_popup() {
+    waitForTime(7);
+    try
+    {
+      driver.switchTo().alert().dismiss();
+      driver.switchTo().defaultContent();
+    }
+    catch (NoAlertPresentException Ex)
+    {
+      ltLogger.info("No alert present");
+    }
   }
 
   public void clickOnElementIfPresent(String[] locator) {
@@ -230,7 +276,12 @@ public class WebDriverHelper extends Base {
   }
 
   public void clickOnElement(WebElement ele) {
-    ele.click();
+    try {
+      ele.click();
+    } catch (Exception e) {
+      waitForTime(10);
+      clickOnElementViaJS(ele);
+    }
   }
 
   public void scrollIntoElementView(String[] locator) {
@@ -251,16 +302,20 @@ public class WebDriverHelper extends Base {
     String using = locator[0].toLowerCase();
     String locatorValue = locator[1];
 
-    if (using.contentEquals("id")) {
-      wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id(locatorValue)));
-    } else if (using.contentEquals("class")) {
-      wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(locatorValue)));
-    } else if (using.contentEquals("name")) {
-      wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.name(locatorValue)));
-    } else if (using.contentEquals("xpath")) {
-      wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locatorValue)));
-    } else if (using.contentEquals("css")) {
-      wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(locatorValue)));
+    try {
+      if (using.contentEquals("id")) {
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id(locatorValue)));
+      } else if (using.contentEquals("class")) {
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(locatorValue)));
+      } else if (using.contentEquals("name")) {
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.name(locatorValue)));
+      } else if (using.contentEquals("xpath")) {
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locatorValue)));
+      } else if (using.contentEquals("css")) {
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(locatorValue)));
+      }
+    } catch (Exception e) {
+      ltLogger.info(e.getMessage());
     }
   }
 
@@ -345,9 +400,9 @@ public class WebDriverHelper extends Base {
     }.getClass().getEnclosingMethod().getName();
     try {
       boolean elementFound = getElement(locator, 0).isDisplayed();
-      ltLogger
-        .info("INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}",
-          locator, methodName);
+      ltLogger.info(
+        "INFO: Locator successfully found displaying using locator {} method used " + "for operation is: {}", locator,
+        methodName);
       return elementFound;
     } catch (Exception e) {
       ltLogger.error("ERROR: locator that is not visble: {} method that threw this error {}", locator, methodName);
@@ -419,7 +474,15 @@ public class WebDriverHelper extends Base {
     try {
       driver.executeScript(script);
     } catch (Exception e) {
+      waitForTime(10);
+      try {
+        driver.executeScript(script);
+      } catch (Exception e1) {
+        ltLogger.info("java script execution failed on retry");
+        ltLogger.info(e1.getMessage());
+      }
       ltLogger.info("java script execution failed");
+      ltLogger.info(e.getMessage());
     }
   }
 
@@ -465,8 +528,12 @@ public class WebDriverHelper extends Base {
   }
 
   public void mouseHoverOnElement(String[] locator) {
-    WebElement ele = getElement(locator);
-    actions.moveToElement(ele).build().perform();
+    try {
+      WebElement ele = getElement(locator);
+      actions.moveToElement(ele).build().perform();
+    } catch (Exception e) {
+      ltLogger.info("Mouse hover condition failed for element :- {}", locator);
+    }
   }
 
   public void clickInsideCanvas(String[] locator, Integer x, Integer y) {
@@ -599,7 +666,28 @@ public class WebDriverHelper extends Base {
   }
 
   public void closeTab() {
-    driver.close();
+    Set<String> allWindows = driver.getWindowHandles();
+    String currentWindowID = driver.getWindowHandle();
+    String previousWindows = "";
+
+    Iterator<String> itr = allWindows.iterator();
+    boolean currWindowFound = false;
+    while (itr.hasNext()) {
+      String itrWindowID = itr.next();
+      if (previousWindows.isEmpty()) {
+        previousWindows = itrWindowID;
+      }
+      if (itrWindowID.equals(currentWindowID)) {
+        currWindowFound = true;
+      }
+      if (currWindowFound) {
+        driver.close();
+        driver.switchTo().window(previousWindows);
+      } else {
+        previousWindows = itrWindowID;
+      }
+    }
+
   }
 
   public void goBack() {
@@ -617,6 +705,7 @@ public class WebDriverHelper extends Base {
 
   public void openNewTab(String url) {
     driver.executeScript("window.open('" + url + "');");
+    switchToNextWindow();
   }
 
   public void refreshChildWindow() {
@@ -637,7 +726,11 @@ public class WebDriverHelper extends Base {
 
   public void clearInput(String[] locator) {
     WebElement ele = getElement(locator);
-    ele.click();
+    try {
+      ele.click();
+    } catch (Exception e) {
+      clickOnElementViaJS(ele);
+    }
     ele.clear();
   }
 
@@ -702,13 +795,30 @@ public class WebDriverHelper extends Base {
     }
   }
 
+  public void clickOnElementViaJS(WebElement ele) {
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    executor.executeScript("arguments[0].click();", ele);
+  }
+
   public boolean isElementAvailable(String[] locator) {
+    boolean isAvailable = false;
+    try {
+      getElement(locator).isEnabled();
+      //      isElementDisplayed(locator);
+      isAvailable = true;
+    } catch (Exception e) {
+      ltLogger.info(e.getMessage());
+    }
+    return isAvailable;
+  }
+
+  public boolean isElementFound(String[] locator) {
     boolean isAvailable = false;
     try {
       getElement(locator);
       isAvailable = true;
     } catch (Exception e) {
-      isAvailable = false;
+      ltLogger.info(e.getMessage());
     }
     return isAvailable;
   }
@@ -753,7 +863,7 @@ public class WebDriverHelper extends Base {
     softAssert.assertAll();
   }
 
-  public boolean checkVariableAssertion(String variableAssertionType, String value, String variable) {
+  public boolean checkVariableAssertion(String variableAssertionType, String variable, String value) {
     switch (variableAssertionType) {
     case "variableMatchesValue":
       return variable.equalsIgnoreCase(value);
@@ -767,11 +877,12 @@ public class WebDriverHelper extends Base {
       return Double.parseDouble(variable) < Double.parseDouble(value);
     case "variableEmpty":
       return (variable == null);
+    case "variableLessThanOrEqualsValue":
+      return Double.parseDouble(variable) <= Double.parseDouble(value);
     default:
       System.out.println("Variable assertion is not valid : " + variableAssertionType);
-      break;
+      throw new RuntimeException("Variable assertion is not valid : " + variableAssertionType);
     }
-    return false;
   }
 
   //pathToFile should contain path + FileName.png
@@ -821,61 +932,91 @@ public class WebDriverHelper extends Base {
     driver.manage().deleteCookieNamed(cookieName);
   }
 
+  public void pageRefreshConditional(String Condition) {
+    if (!Condition.contains("disabled")) {
+      pageRefresh();
+    }
+  }
+
   public void waitUntil(String waitCondition, String[] locator, String maxTime, String theRefresh) {
-    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(Integer.valueOf(maxTime))).pollingEvery(refreshValue(theRefresh))
-      .ignoring(NoSuchElementException.class);
+    int maxWaitTime = Integer.parseInt(maxTime);
+    int pollingInterval = refreshValueInt(theRefresh);
+    if (maxWaitTime < pollingInterval) {
+      maxWaitTime = pollingInterval;
+    }
+    FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver).withTimeout(Duration.ofSeconds(maxWaitTime))
+      .pollingEvery(Duration.ofSeconds(pollingInterval)).ignoring(Exception.class);
 
     switch (waitCondition) {
     case "CheckElement":
-      wait.until(driver1 -> {
-        try {
-          return getElement(locator, 0);
-        } catch (Exception e) {
-          pageRefresh();
-        }
-        return null;
-      });
+      try {
+        wait.until(driver1 -> {
+          try {
+            return getElement(locator, 0);
+          } catch (Exception e) {
+            pageRefreshConditional(theRefresh);
+            return null;
+          }
+        });
+      } catch (Exception e) {
+        ltLogger.info("wait condition failed for element :- {}  with waitCondition as {} ", locator, waitCondition);
+      }
       break;
     case "CheckClickableElement":
-      wait.until(driver1 -> {
-        try {
-          return isDisplayed(locator, 0) && isEnabled(locator, 0);
-        } catch (Exception e) {
-          pageRefresh();
-        }
-        return null;
-      });
+      try {
+        wait.until(driver1 -> {
+          try {
+            return isDisplayed(locator, 0) && isEnabled(locator, 0);
+          } catch (Exception e) {
+            pageRefreshConditional(theRefresh);
+            return null;
+          }
+        });
+      } catch (Exception e) {
+        ltLogger.info("wait condition failed for element :- {}  with waitCondition as {} ", locator, waitCondition);
+      }
       break;
     case "CheckEnabledElement":
-      wait.until(driver1 -> {
-        try {
-          return isEnabled(locator, 0);
-        } catch (Exception e) {
-          pageRefresh();
-        }
-        return null;
-      });
+      try {
+        wait.until(driver1 -> {
+          try {
+            return isEnabled(locator, 0);
+          } catch (Exception e) {
+            pageRefreshConditional(theRefresh);
+            return null;
+          }
+        });
+      } catch (Exception e) {
+        ltLogger.info("wait condition failed for element :- {}  with waitCondition as {} ", locator, waitCondition);
+      }
       break;
     case "CheckVisibleElement":
-      wait.until(driver1 -> {
-        try {
-          return isDisplayed(locator, 0);
-        } catch (Exception e) {
-          pageRefresh();
-        }
-        return null;
-      });
+      try {
+        wait.until(driver1 -> {
+          try {
+            return isDisplayed(locator, 0);
+          } catch (Exception e) {
+            pageRefreshConditional(theRefresh);
+          }
+          return null;
+        });
+      } catch (Exception e) {
+        ltLogger.info("wait condition failed for element :- {}  with waitCondition as {} ", locator, waitCondition);
+      }
       break;
     case "CheckVisibleNotElement":
-      wait.until(driver1 -> {
-        try {
-          return !isDisplayed(locator, 0);
-        } catch (Exception e) {
-          pageRefresh();
-        }
-        return null;
-      });
+      try {
+        wait.until(driver1 -> {
+          try {
+            return !isDisplayed(locator, 0);
+          } catch (Exception e) {
+            pageRefreshConditional(theRefresh);
+          }
+          return null;
+        });
+      } catch (Exception e) {
+        ltLogger.info("wait condition failed for element :- {}  with waitCondition as {} ", locator, waitCondition);
+      }
       break;
     default:
       System.out.println("Wait condition not handled");
@@ -885,14 +1026,26 @@ public class WebDriverHelper extends Base {
 
   private Duration refreshValue(String theRefresh) {
     switch (theRefresh) {
-    case "ten":
-      return Duration.ofSeconds(10);
     case "thirty":
       return Duration.ofSeconds(30);
     case "sixty":
       return Duration.ofSeconds(60);
+    case "ten":
     default:
-      return Duration.ofSeconds(0);
+      return Duration.ofSeconds(5);
+    }
+  }
+
+  private int refreshValueInt(String theRefresh) {
+    switch (theRefresh) {
+    case "ten":
+      return 10;
+    case "thirty":
+      return 30;
+    case "sixty":
+      return 60;
+    default:
+      return 5;
     }
   }
 
@@ -962,6 +1115,7 @@ public class WebDriverHelper extends Base {
 
   public void scroll(String condition) {
     JavascriptExecutor js = (JavascriptExecutor) driver;
+    waitForTime(8);
     switch (condition) {
     case "ScrollBottom":
       js.executeScript("window.scrollTo(0, document.body.scrollHeight)");

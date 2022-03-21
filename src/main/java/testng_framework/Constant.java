@@ -28,7 +28,7 @@ public class Constant {
   protected static final String SUITE_STEP_FILE_PATH = System.getProperty("user.dir")
     .split("EndtestTestNGMigrationLambdatest")[0] + "EndtestTestNGMigrationLambdatest" + "/" + "src/main/java/StepDef/";
   protected static final String SUITE_CLASS_END_BODY = "}";
-  protected static final String DYNAMIC_SUITE_CLASS_BODY = "package generated_tests;\n" + "\n" + "import testng_framework.WebDriverHelper;\n" + "import org.testng.Assert;\n" + "import org.testng.annotations.Test;\n" + "\n" + "public class <addSuiteName> extends WebDriverHelper {\n" + "\n" + " \n" + "}";
+  protected static final String DYNAMIC_SUITE_CLASS_BODY = "package generated_tests;\n" + "\n" + "import testng_framework.WebDriverHelper;\n" + "import org.testng.Assert;\n" + "import org.testng.annotations.Test;\n" + "import java.io.File;\n" + "\n" + "public class <addSuiteName> extends WebDriverHelper {\n" + "\n" + " \n" + "}";
   protected static final String TEST_PATH = System.getProperty("user.dir")
     .split("EndtestTestNGMigrationLambdatest")[0] + "EndtestTestNGMigrationLambdatest" + "/" + "logs/testsFiles/";
   protected static final String TEST_FILE_EXTENSION = "";
@@ -45,8 +45,16 @@ public class Constant {
   protected static final String DYNAMIC_STEP_DEF_BODY = "package StepDef;\n" + "\n" + "import generated_tests.<SUITE_CLASS_NAME_IN_STEP>;\n" + "import io.cucumber.java.en.Given;\n" + "\n" + "public class <SUITE_CLASS_NAME_IN_STEP>_StepDef {\n" + "  <SUITE_CLASS_NAME_IN_STEP> <SUITE_CLASS_OBJECT_NAME_IN_STEP> = new <SUITE_CLASS_NAME_IN_STEP>();\n" + "\n" + "}";
   protected static final String SUITE_CLASS_NAME_IN_STEP = "<SUITE_CLASS_NAME_IN_STEP>";
   protected static final String SUITE_CLASS_OBJECT_NAME_IN_STEP = "<SUITE_CLASS_OBJECT_NAME_IN_STEP>";
-  protected static final String SCENARIO_STEP_BODY = "\n" + "  @Given(\"<SCENARIO_NAME>\")\n" + "  public void <TEST_STEP_METHOD>Step() {\n" + "    <SUITE_CLASS_OBJECT_NAME_IN_STEP>.<TEST_STEP_METHOD>();\n" + "  }" + "\n";
+  protected static final String SCENARIO_STEP_BODY = "\n" + "  @Given(\"<SCENARIO_NAME>\")\n" + "  public void <TEST_STEP_SCENARIO_METHOD>Step() {\n" + "    <SUITE_CLASS_OBJECT_NAME_IN_STEP>.<TEST_STEP_METHOD>();\n" + "  }" + "\n";
   protected static final String TEST_STEP_METHOD = "<TEST_STEP_METHOD>";
+  protected static final String TEST_STEP_SCENARIO_METHOD = "<TEST_STEP_SCENARIO_METHOD>";
+  protected static final String CONSOLE_LOGS = "consoleLogs";
+  protected static final String CONSOLE = "console";
+  protected static final String VIDEO = "video";
+  protected static final String VISUAL = "visual";
+  protected static final String NETWORK = "network";
+  protected static final String TRUE = "true";
+  protected static final String FALSE = "false";
 
   public static Map<String, String> locatorUsing = getLocatorUsing();
 

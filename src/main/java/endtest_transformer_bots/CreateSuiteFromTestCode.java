@@ -50,8 +50,9 @@ public class CreateSuiteFromTestCode extends Constant {
     } else {
       System.out.println("file is empty");
     }
-    stepContents = SCENARIO_STEP_BODY.replaceAll(SCENARIO_NAME_PLACEHOLDER, testName.replaceAll("_", " "))
-      .replaceAll(TEST_STEP_METHOD, testName)
+    stepContents = SCENARIO_STEP_BODY.replaceAll(SCENARIO_NAME_PLACEHOLDER,
+        suiteName.replaceAll("_", " ") + " : " + testName.replaceAll("_", " "))
+      .replaceAll(TEST_STEP_SCENARIO_METHOD, suiteName + testName).replaceAll(TEST_STEP_METHOD, testName)
       .replaceAll(SUITE_CLASS_OBJECT_NAME_IN_STEP, suiteName.replaceAll("_", ""));
     writeToFile(SUITE_STEP_FILE_PATH + suiteName + "_StepDef.java",
       stepDefFileContent + stepContents + SUITE_CLASS_END_BODY);
@@ -64,7 +65,8 @@ public class CreateSuiteFromTestCode extends Constant {
       featureFileContent = new String(Files.readAllBytes(Paths.get(SUITE_FEATURE_PATH + suiteName + ".feature")));
       Integer suiteTagCount = featureFileContent.split(suiteName).length - 1;
       String currtestTag = suiteName + "_" + suiteTagCount;
-      scenarioContents = DYNAMIC_SCENARIO_BODY.replaceAll(SCENARIO_NAME_PLACEHOLDER, testName.replaceAll("_", " "))
+      scenarioContents = DYNAMIC_SCENARIO_BODY.replaceAll(SCENARIO_NAME_PLACEHOLDER,
+          suiteName.replaceAll("_", " ") + " : " + testName.replaceAll("_", " "))
         .replaceAll(SCENARIO_TEST_TAG_PLACEHOLDER, currtestTag);
 
       writeToFile(SUITE_FEATURE_PATH + suiteName + ".feature", featureFileContent + scenarioContents);

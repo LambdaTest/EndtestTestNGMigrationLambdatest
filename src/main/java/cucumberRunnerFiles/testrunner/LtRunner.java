@@ -7,9 +7,13 @@ import org.testng.annotations.DataProvider;
 @CucumberOptions(
         features = {"src/main/java"},
         glue = {"StepDef", "cucumberRunnerFiles.hooks"},
-        tags = "not @extra",
+        //tags = "not @mobile",
+        tags = "@Regression_Peru_MTO",
+        //tags = "@mobile",
+        //tags = "not @any",
         monochrome = true,
         plugin = {
+				"io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm",
         		"pretty","com.epam.reportportal.cucumber.ScenarioReporter",
         		"json:target/cucumber-reports/CucumberTestReport.json",
         		"html:target/cucumber-reports/testReport.html",
