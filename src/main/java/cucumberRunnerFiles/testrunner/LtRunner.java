@@ -7,8 +7,7 @@ import org.testng.annotations.DataProvider;
 @CucumberOptions(
         features = {"src/main/java"},
         glue = {"StepDef", "cucumberRunnerFiles.hooks"},
-        //tags = "not @mobile",
-        tags = "@Regression_Peru_MTO",
+        tags = "not @mobile",
         //tags = "@mobile",
         //tags = "not @any",
         monochrome = true,
