@@ -44,6 +44,7 @@ public class CreateSuiteFromTestCode extends Constant {
       e.printStackTrace();
     }
     int lastIndex = 0;
+
     if (stepDefFileContent != null && !stepDefFileContent.equalsIgnoreCase("")) {
       lastIndex = stepDefFileContent.lastIndexOf("}");
       stepDefFileContent = stepDefFileContent.substring(0, lastIndex);

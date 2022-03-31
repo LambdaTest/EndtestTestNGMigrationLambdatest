@@ -13,7 +13,7 @@ import org.testng.annotations.DataProvider;
         //tags = "not @any",
         monochrome = true,
         plugin = {
-				"io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm",
+//				"io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm",
         		"pretty","com.epam.reportportal.cucumber.ScenarioReporter",
         		"json:target/cucumber-reports/CucumberTestReport.json",
         		"html:target/cucumber-reports/testReport.html",
