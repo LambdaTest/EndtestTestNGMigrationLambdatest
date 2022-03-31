@@ -1,5 +1,0 @@
-prod:
-   client_env_username : ""
-   client_env_key : ""
-   client_env_hubUrlStr : "hub"
-   client_env_url_sub_str : ""

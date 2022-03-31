@@ -1,8 +1,8 @@
 package endtest_transformer_bots;
 
+import DTO.response.TestCaseStepsDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import mongo_services.DTO.response.TestCaseStepsDTO;
 import org.apache.logging.log4j.LogManager;
 import testng_framework.Constant;
 import testng_framework.WebDriverHelper;
@@ -259,7 +259,7 @@ public class StepToCode extends Constant {
       writeInFile(fileName, "mouseHoverOnElement(new String[] {" + locator[0] + ", \"" + locator[1] + "\"});");
       break;
     case "OpenNewTab":
-      writeInFile(fileName, "openNewTab(\"" + testCaseStepsDTO.getParameter1() + "\");");
+      writeInFile(fileName, "openNewTab(\"" + testCaseStepsDTO.getParameter2() + "\");");
     case "Refresh":
       writeInFile(fileName, "pageRefresh();");
       break;
@@ -314,7 +314,7 @@ public class StepToCode extends Constant {
   }
 
   private void generateFullPageScreenshoot(String fileName, TestCaseStepsDTO testCaseStepsDTO) {
-    writeInFile(fileName, "takeScreenshotOfEntirePage(logs/Screenshoots/" + getRandomString(6) + ".png);");
+    writeInFile(fileName, "takeScreenshotOfEntirePage(\"logs/Screenshoots/" + getRandomString(6) + ".png\");");
 
   }
 
@@ -407,7 +407,7 @@ public class StepToCode extends Constant {
       break;
     case "CountChildElements":
       writeInFile(fileName,
-        "Assert.assertEquals(getChildElements(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).size(), \"" + testCaseStepsDTO.getParameter3() + "\");");
+        "Assert.assertEquals(String.valueOf(getChildElements(new String[] { " + locator[0] + ", \"" + locator[1] + "\" }).size()), \"" + testCaseStepsDTO.getParameter3() + "\");");
       break;
     case "CheckElementScreenshot":
       writeInFile(fileName,
@@ -514,7 +514,7 @@ public class StepToCode extends Constant {
   public void pressKey(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
     String[] locator = locatorTransform(givenTestCaseStepsDTO.getLocator(), givenTestCaseStepsDTO.getParameter2());
     writeInFile(fileName,
-      "pressKey(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, \"" + givenTestCaseStepsDTO.getParameter2() + "\");");
+      "pressKey(new String[] { " + locator[0] + ", \"" + locator[1] + "\"}, \"" + givenTestCaseStepsDTO.getParameter1() + "\");");
   }
 
   public void scroll(String fileName, TestCaseStepsDTO givenTestCaseStepsDTO) {
